@@ -1,0 +1,40 @@
+{
+  "name": "todo-app-back",
+  "version": "0.1.0",
+  "description": "To Do App Backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npx tsc --watch\" \" nodemon -q ./dist/index.js \""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lemartinezm/todo-app-back.git"
+  },
+  "keywords": [],
+  "author": "lemartinezm",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lemartinezm/todo-app-back/issues"
+  },
+  "homepage": "https://github.com/lemartinezm/todo-app-back#readme",
+  "devDependencies": {
+    "@types/eslint": "^8.4.2",
+    "@types/express": "^4.17.13",
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
+    "@typescript-eslint/parser": "^5.26.0",
+    "concurrently": "^7.2.1",
+    "eslint": "^8.16.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "nodemon": "^2.0.16",
+    "typescript": "^4.7.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mongoose": "^6.3.4"
+  }
+}
