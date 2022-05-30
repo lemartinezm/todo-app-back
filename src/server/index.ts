@@ -1,11 +1,24 @@
 import express, { Request, Response } from 'express';
-import rootRouter from '../routes/index';
+import dbConnect from '../configs/mongo.config';
+import rootRouter from '../routes/root.routes';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from '../../public/swagger.json';
+
+// Connection with DB
+dbConnect();
 
 const server = express();
 
 server.get('/', (req: Request, res: Response) => {
   return res.redirect('/api');
 });
+
+// Serve documentation
+server.use(
+  '/docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument)
+);
 
 server.use('/api', rootRouter);
 

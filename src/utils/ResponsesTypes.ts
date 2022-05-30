@@ -3,8 +3,9 @@ export type BasicResponse = {
   message: string
 }
 
+// TODO: change the type of Todos (is not a string, is an object with properties) for return TodoObject
 export type TodosResponse = {
   status: number,
-  todos?: string,
+  todos?: string[],
   message?: string
 }

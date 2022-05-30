@@ -1,19 +1,19 @@
 import express, { Request, Response } from 'express';
-import todoRouter from './TodoRoute';
+import todoRouter from './todo.routes';
 
 // For the home page from API (http://localhost:3000)
-const rootRouter = express.Router();
+const homeRouter = express.Router();
 
-rootRouter.get('/', (req: Request, res: Response) => {
+homeRouter.get('/', (req: Request, res: Response) => {
   return res.send({
     message: 'Welcome to ToDo App API'
   });
 });
 
 // For redirections in diferents routers for differents nested routes from '/api'
-const server = express();
+const rootRouter = express();
 
-server.use('/', rootRouter);
-server.use('/todos', todoRouter);
+rootRouter.use('/', homeRouter);
+rootRouter.use('/todos', todoRouter);
 
-export default server;
+export default rootRouter;

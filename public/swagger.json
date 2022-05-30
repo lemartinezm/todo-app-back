@@ -1,0 +1,75 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"TodosResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"todos": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"status"
+				],
+				"type": "object"
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "todo-app-back",
+		"version": "0.1.0",
+		"description": "To Do App Backend",
+		"license": {
+			"name": "MIT"
+		},
+		"contact": {
+			"name": "lemartinezm"
+		}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/api/todos": {
+			"get": {
+				"operationId": "GetTodos",
+				"responses": {
+					"200": {
+						"description": "Todos from test variables",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TodosResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Method to get all todos from DB (to implement...)",
+				"tags": [
+					"TodoController"
+				],
+				"security": [],
+				"parameters": []
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}
