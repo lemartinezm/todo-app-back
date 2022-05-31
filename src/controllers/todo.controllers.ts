@@ -1,9 +1,15 @@
 import { createTodo, deleteTodo, getAllTodos, getTodoById, updateTodo } from '../database/todo.odm';
-import { TodosResponse, TodosResponseDocs } from '../utils/ResponsesTypes';
+import { TodosResponse } from '../utils/ResponsesTypes';
 import { ITodoController } from './interfaces/todoController.interface';
 import { BodyProp, Delete, Example, Get, Post, Put, Query, Response, Route, SuccessResponse, Tags } from 'tsoa';
 import { LogError } from '../utils/Logger';
 import { IUpdatedTodo } from '../models/interfaces/todo.interface';
+
+// Example object for error petitions
+const errorExample: TodosResponse = {
+  status: 400,
+  message: 'Error: Something went wrong'
+};
 
 @Route('api/todos')
 @Tags('TodoController')
@@ -15,28 +21,26 @@ export class TodoController implements ITodoController {
    */
   @Get('/')
   @SuccessResponse(200, 'ToDos obtained successfully')
-  @Response(400, 'Something went wrong')
-  @Example<TodosResponseDocs>(
-    {
-      status: 200,
-      todos: [
-        {
-          _id: '6294dd86ecca76f24a89503d',
-          name: 'This is a ToDo created from Postman',
-          priority: 'NORMAL',
-          completed: false,
-          __v: 0
-        },
-        {
-          _id: '6294ddfed8d225386a4f956c',
-          name: 'Second ToDo modified from Postman',
-          priority: 'HIGH',
-          completed: false,
-          __v: 0
-        }
-      ]
-    }
-  )
+  @Response<TodosResponse>(400, 'Something went wrong', errorExample)
+  @Example<TodosResponse>({
+    status: 200,
+    todos: [
+      {
+        _id: '6294dd86ecca76f24a89503d',
+        name: 'This is a ToDo example',
+        priority: 'NORMAL',
+        completed: false,
+        __v: 0
+      },
+      {
+        _id: '6294ddfed8d225386a4f956c',
+        name: 'Second ToDo example',
+        priority: 'HIGH',
+        completed: false,
+        __v: 0
+      }
+    ]
+  })
   async getTodos (@Query() id?: string): Promise<TodosResponse> {
     let response: TodosResponse;
     if (id) {
@@ -47,15 +51,19 @@ export class TodoController implements ITodoController {
     return response;
   };
 
-  // TODO: specify differents types of return
   /**
    * Endpoint to create a ToDo
    * @param {string} name ToDo name
+   * @param {string} priority ToDo priority
    * @returns {TodosResponse} Object with status code and confirmation or error message.
    */
   @Post('/')
   @SuccessResponse(201, 'ToDos created successfully')
-  @Response(400, 'Something went wrong')
+  @Response<TodosResponse>(400, 'Something went wrong', errorExample)
+  @Example({
+    status: 201,
+    message: 'ToDo created successfully'
+  })
   async createNewTodo (@BodyProp('name') name: string | undefined,
     @BodyProp('priority') priority: string | undefined): Promise<TodosResponse> {
     let response: TodosResponse;
@@ -86,9 +94,10 @@ export class TodoController implements ITodoController {
    */
   @Put('/')
   @SuccessResponse(200, 'ToDo updated successfully')
-  @Response<TodosResponse>(400, 'Something went wrong', {
-    status: 400,
-    message: 'Something went wrong'
+  @Response<TodosResponse>(400, 'Something went wrong', errorExample)
+  @Example<TodosResponse>({
+    status: 200,
+    message: 'ToDo with id {ToDo ID} updated successfully'
   })
   async updateTodoById (@Query() id: string,
     @BodyProp('name') name?: string,
@@ -120,10 +129,7 @@ export class TodoController implements ITodoController {
    */
   @Delete('/')
   @SuccessResponse(200, 'ToDo deleted successfully')
-  @Response<TodosResponse>(400, 'Something went wrong', {
-    status: 400,
-    message: 'Error: Something went wrong'
-  })
+  @Response<TodosResponse>(400, 'Something went wrong', errorExample)
   @Example<TodosResponse>({
     status: 200,
     message: 'ToDo with id {ToDo ID} deleted successfully'

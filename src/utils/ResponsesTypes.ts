@@ -1,4 +1,4 @@
-import { CreateTodoSchema, TodoSchemaDocs } from '../models/interfaces/todo.interface';
+import { TodoSchema } from '../models/interfaces/todo.interface';
 
 export type BasicResponse = {
   status: number,
@@ -10,12 +10,6 @@ export type BasicResponse = {
  */
 export type TodosResponse = {
   status: number,
-  todos?: CreateTodoSchema[],
-  message?: string
-}
-
-export type TodosResponseDocs = {
-  status: number,
-  todos?: TodoSchemaDocs[],
+  todos?: TodoSchema[],
   message?: string
 }

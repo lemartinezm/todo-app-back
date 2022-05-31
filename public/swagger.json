@@ -6,9 +6,12 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"CreateTodoSchema": {
-				"description": "Schema for create a ToDo",
+			"TodoSchema": {
+				"description": "Schema returned by DB",
 				"properties": {
+					"_id": {
+						"type": "string"
+					},
 					"name": {
 						"type": "string"
 					},
@@ -17,12 +20,18 @@
 					},
 					"completed": {
 						"type": "boolean"
+					},
+					"__v": {
+						"type": "number",
+						"format": "double"
 					}
 				},
 				"required": [
+					"_id",
 					"name",
 					"priority",
-					"completed"
+					"completed",
+					"__v"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -34,7 +43,7 @@
 					},
 					"todos": {
 						"items": {
-							"$ref": "#/components/schemas/CreateTodoSchema"
+							"$ref": "#/components/schemas/TodoSchema"
 						},
 						"type": "array"
 					},
@@ -83,14 +92,14 @@
 											"todos": [
 												{
 													"_id": "6294dd86ecca76f24a89503d",
-													"name": "This is a ToDo created from Postman",
+													"name": "This is a ToDo example",
 													"priority": "NORMAL",
 													"completed": false,
 													"__v": 0
 												},
 												{
 													"_id": "6294ddfed8d225386a4f956c",
-													"name": "Second ToDo modified from Postman",
+													"name": "Second ToDo example",
 													"priority": "HIGH",
 													"completed": false,
 													"__v": 0
@@ -103,7 +112,22 @@
 						}
 					},
 					"400": {
-						"description": "Something went wrong"
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TodosResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Error: Something went wrong"
+										}
+									}
+								}
+							}
+						}
 					}
 				},
 				"description": "Endpoint to get all ToDos or one by ID",
@@ -132,12 +156,35 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/TodosResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 201,
+											"message": "ToDo created successfully"
+										}
+									}
 								}
 							}
 						}
 					},
 					"400": {
-						"description": "Something went wrong"
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TodosResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Error: Something went wrong"
+										}
+									}
+								}
+							}
+						}
 					}
 				},
 				"description": "Endpoint to create a ToDo",
@@ -157,7 +204,8 @@
 										"description": "ToDo name"
 									},
 									"priority": {
-										"type": "string"
+										"type": "string",
+										"description": "ToDo priority"
 									}
 								},
 								"type": "object"
@@ -175,6 +223,14 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/TodosResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"message": "ToDo with id {ToDo ID} updated successfully"
+										}
+									}
 								}
 							}
 						}
@@ -190,7 +246,7 @@
 									"Example 1": {
 										"value": {
 											"status": 400,
-											"message": "Something went wrong"
+											"message": "Error: Something went wrong"
 										}
 									}
 								}

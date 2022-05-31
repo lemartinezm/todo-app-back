@@ -10,7 +10,7 @@ export interface CreateTodoSchema {
 /**
  * Schema returned by DB
  */
-export interface TodoSchemaDocs {
+export interface TodoSchema {
   _id: string,
   name: string,
   priority: string,
