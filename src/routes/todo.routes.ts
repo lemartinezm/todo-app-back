@@ -23,6 +23,18 @@ todoRouter
     const controller: TodoController = new TodoController();
     const response: TodosResponse = await controller.createNewTodo(name, priority);
     return res.status(response.status).send(response);
+  })
+
+  // To update a ToDo
+  .put('/', async (req: Request, res: Response) => {
+    const id: any = req.query?.id;
+    const name: string | undefined = req.body?.name;
+    const priority: string | undefined = req.body?.priority;
+    const completed: boolean | undefined = req.body?.completed;
+
+    const controller: TodoController = new TodoController();
+    const response: TodosResponse = await controller.updateTodoById(id, name, priority, completed);
+    return res.status(response.status).send(response);
   });
 
 export default todoRouter;

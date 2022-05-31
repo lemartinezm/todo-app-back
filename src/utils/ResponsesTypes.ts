@@ -1,11 +1,15 @@
+import { TodoSchema } from '../models/interfaces/todo.interface';
+
 export type BasicResponse = {
   status: number,
   message: string
 }
 
-// TODO: change the type of Todos (is not a string, is an object with properties) for return TodoObject
+/**
+ * Response for petitions sent to ToDos endpoints
+ */
 export type TodosResponse = {
   status: number,
-  todos?: string[],
+  todos?: TodoSchema[],
   message?: string
 }

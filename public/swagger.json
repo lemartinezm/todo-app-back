@@ -6,6 +6,27 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"TodoSchema": {
+				"description": "Schema of all ToDos",
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"priority": {
+						"type": "string"
+					},
+					"completed": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"name",
+					"priority",
+					"completed"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"TodosResponse": {
 				"properties": {
 					"message": {
@@ -13,7 +34,7 @@
 					},
 					"todos": {
 						"items": {
-							"type": "string"
+							"$ref": "#/components/schemas/TodoSchema"
 						},
 						"type": "array"
 					},
@@ -23,6 +44,23 @@
 					}
 				},
 				"required": [
+					"status"
+				],
+				"type": "object",
+				"description": "Response for petitions sent to ToDos endpoints"
+			},
+			"BasicResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"message",
 					"status"
 				],
 				"type": "object"
@@ -48,7 +86,7 @@
 				"operationId": "GetTodos",
 				"responses": {
 					"200": {
-						"description": "Todos from test variables",
+						"description": "ToDos obtained successfully",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -56,14 +94,133 @@
 								}
 							}
 						}
+					},
+					"400": {
+						"description": "Something went wrong"
 					}
 				},
-				"description": "Method to get all todos from DB (to implement...)",
+				"description": "Endpoint to get all ToDos",
 				"tags": [
 					"TodoController"
 				],
 				"security": [],
 				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateNewTodo",
+				"responses": {
+					"201": {
+						"description": "ToDos created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TodosResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong"
+					}
+				},
+				"description": "Endpoint to create a ToDo",
+				"tags": [
+					"TodoController"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "ToDo name"
+									},
+									"priority": {
+										"type": "string"
+									}
+								},
+								"type": "object"
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"operationId": "UpdateTodoById",
+				"responses": {
+					"200": {
+						"description": "ToDo updated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TodosResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to update ToDo by ID",
+				"tags": [
+					"TodoController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "ToDo ID to update",
+						"in": "query",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "New name to update ToDo"
+									},
+									"priority": {
+										"type": "string",
+										"description": "New priority to update ToDo"
+									},
+									"completed": {
+										"type": "boolean",
+										"description": "New completed to update ToDo"
+									}
+								},
+								"type": "object"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

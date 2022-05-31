@@ -22,6 +22,4 @@ server.use(
 
 server.use('/api', rootRouter);
 
-// TODO: include /docs for documentation with swagger
-
 export default server;
