@@ -35,17 +35,21 @@ export const getAllTodos = async (): Promise<TodosResponse> => {
  */
 export const getTodoById = async (id: string): Promise<TodosResponse> => {
   const response: TodosResponse = {
-    status: 0
+    status: 400
   };
   try {
     const todoModel = todoEntity();
     await todoModel.findById(id)
       .then(todo => {
-        response.status = 200;
-        response.todos = [todo];
+        if (todo) {
+          response.status = 200;
+          response.todos = [todo];
+        } else {
+          response.status = 404;
+          throw new Error(`ToDo with id ${id} not found`);
+        }
       });
   } catch (error) {
-    response.status = 400;
     response.message = `${error}`;
     LogError(`[ODM ERROR] Something went wrong. Details ${error}`);
   }
@@ -87,17 +91,21 @@ export const createTodo = async (todo: CreateTodoSchema): Promise<TodosResponse>
  */
 export const updateTodo = async (id: string, todoUpdated: IUpdatedTodo): Promise<TodosResponse> => {
   const response: TodosResponse = {
-    status: 0
+    status: 400
   };
   try {
     const todoModel = todoEntity();
     await todoModel.findByIdAndUpdate(id, todoUpdated)
-      .then(() => {
-        response.status = 200;
-        response.message = `ToDo with id ${id} updated successfully`;
+      .then((res) => {
+        if (res) {
+          response.status = 200;
+          response.message = `ToDo with id ${id} updated successfully`;
+        } else {
+          response.status = 404;
+          throw new Error(`Todo with ID ${id} not found`);
+        }
       });
   } catch (error) {
-    response.status = 400;
     response.message = `${error}`;
     LogError(`[ODM ERROR] Something went wrong. Details ${error}`);
   }
@@ -112,18 +120,22 @@ export const updateTodo = async (id: string, todoUpdated: IUpdatedTodo): Promise
  */
 export const deleteTodo = async (id: string): Promise<TodosResponse> => {
   const response: TodosResponse = {
-    status: 0
+    status: 400
   };
 
   try {
     const todoModel = todoEntity();
     await todoModel.findByIdAndDelete(id)
-      .then(() => {
-        response.status = 200;
-        response.message = `ToDo with id ${id} deleted successfully`;
+      .then((res) => {
+        if (res) {
+          response.status = 200;
+          response.message = `ToDo with id ${id} deleted successfully`;
+        } else {
+          response.status = 404;
+          throw new Error(`ToDo with id ${id} not found`);
+        }
       });
   } catch (error) {
-    response.status = 400;
     response.message = `${error}`;
     LogError(`[ODM ERROR] Something went wrong. Details ${error}`);
   }

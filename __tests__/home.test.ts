@@ -13,6 +13,13 @@ describe('Home Test', () => {
         expect(response.body.status).toEqual(200);
       });
   });
+  test('redirection to api route', async () => {
+    await server
+      .get('/')
+      .then((response) => {
+        expect(response.status).toEqual(302);
+      });
+  });
 });
 
 afterAll(() => {
