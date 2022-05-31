@@ -76,7 +76,7 @@ export class TodoController implements ITodoController {
     } else {
       response = {
         status: 400,
-        message: 'Please, complete all the fields'
+        message: 'Please, complete all fields'
       };
       LogError(`[api/todo] ${response.message}`);
     }
