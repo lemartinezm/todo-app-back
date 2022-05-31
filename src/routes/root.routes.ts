@@ -5,7 +5,8 @@ import todoRouter from './todo.routes';
 const homeRouter = express.Router();
 
 homeRouter.get('/', (req: Request, res: Response) => {
-  return res.send({
+  return res.status(200).send({
+    status: 200,
     message: 'Welcome to ToDo App API'
   });
 });
