@@ -1,7 +1,7 @@
-import { createTodo, getAllTodos, updateTodo } from '../database/todo.odm';
-import { BasicResponse, TodosResponse } from '../utils/ResponsesTypes';
+import { createTodo, deleteTodo, getAllTodos, getTodoById, updateTodo } from '../database/todo.odm';
+import { TodosResponse, TodosResponseDocs } from '../utils/ResponsesTypes';
 import { ITodoController } from './interfaces/todoController.interface';
-import { BodyProp, Get, Post, Put, Query, Response, Route, SuccessResponse, Tags } from 'tsoa';
+import { BodyProp, Delete, Example, Get, Post, Put, Query, Response, Route, SuccessResponse, Tags } from 'tsoa';
 import { LogError } from '../utils/Logger';
 import { IUpdatedTodo } from '../models/interfaces/todo.interface';
 
@@ -9,17 +9,45 @@ import { IUpdatedTodo } from '../models/interfaces/todo.interface';
 @Tags('TodoController')
 export class TodoController implements ITodoController {
   /**
-   * Endpoint to get all ToDos
+   * Endpoint to get all ToDos or one by ID
+   * @param {string} id ToDo ID to obtain
    * @returns {TodosResponse} Object with status code and confirmation or error message.
    */
   @Get('/')
   @SuccessResponse(200, 'ToDos obtained successfully')
   @Response(400, 'Something went wrong')
-  async getTodos (): Promise<TodosResponse> {
-    const response: TodosResponse = await getAllTodos();
+  @Example<TodosResponseDocs>(
+    {
+      status: 200,
+      todos: [
+        {
+          _id: '6294dd86ecca76f24a89503d',
+          name: 'This is a ToDo created from Postman',
+          priority: 'NORMAL',
+          completed: false,
+          __v: 0
+        },
+        {
+          _id: '6294ddfed8d225386a4f956c',
+          name: 'Second ToDo modified from Postman',
+          priority: 'HIGH',
+          completed: false,
+          __v: 0
+        }
+      ]
+    }
+  )
+  async getTodos (@Query() id?: string): Promise<TodosResponse> {
+    let response: TodosResponse;
+    if (id) {
+      response = await getTodoById(id);
+    } else {
+      response = await getAllTodos();
+    }
     return response;
   };
 
+  // TODO: specify differents types of return
   /**
    * Endpoint to create a ToDo
    * @param {string} name ToDo name
@@ -29,7 +57,7 @@ export class TodoController implements ITodoController {
   @SuccessResponse(201, 'ToDos created successfully')
   @Response(400, 'Something went wrong')
   async createNewTodo (@BodyProp('name') name: string | undefined,
-  @BodyProp('priority') priority: string | undefined): Promise<TodosResponse> {
+    @BodyProp('priority') priority: string | undefined): Promise<TodosResponse> {
     let response: TodosResponse;
     if (name && priority) {
       response = await createTodo({
@@ -54,11 +82,11 @@ export class TodoController implements ITodoController {
    * @param {string} name New name to update ToDo
    * @param {string} priority New priority to update ToDo
    * @param {boolean} completed New completed to update ToDo
-   * @returns {TodosResponse || BasicResponse} Object with status code and confirmation or error message.
+   * @returns {TodosResponse} Object with status code and confirmation or error message.
    */
   @Put('/')
   @SuccessResponse(200, 'ToDo updated successfully')
-  @Response<BasicResponse>(400, 'Something went wrong', {
+  @Response<TodosResponse>(400, 'Something went wrong', {
     status: 400,
     message: 'Something went wrong'
   })
@@ -78,6 +106,36 @@ export class TodoController implements ITodoController {
       response = {
         status: 400,
         message: 'Missing ToDo ID to update'
+      };
+      LogError(`[api/todo] ${response.message}`);
+    }
+
+    return response;
+  }
+
+  /**
+   * Endpoint to delete a ToDo by ID
+   * @param {string} id ToDo ID to delete
+   * @returns {TodosResponse} Object with status code and confirmation or error message.
+   */
+  @Delete('/')
+  @SuccessResponse(200, 'ToDo deleted successfully')
+  @Response<TodosResponse>(400, 'Something went wrong', {
+    status: 400,
+    message: 'Error: Something went wrong'
+  })
+  @Example<TodosResponse>({
+    status: 200,
+    message: 'ToDo with id {ToDo ID} deleted successfully'
+  })
+  async deleteTodoById (@Query() id: string): Promise<TodosResponse> {
+    let response: TodosResponse;
+    if (id) {
+      response = await deleteTodo(id);
+    } else {
+      response = {
+        status: 400,
+        message: 'Missing ToDo ID to delete'
       };
       LogError(`[api/todo] ${response.message}`);
     }

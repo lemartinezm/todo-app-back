@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
-import { TodoSchema } from '../interfaces/todo.interface';
+import { CreateTodoSchema } from '../interfaces/todo.interface';
 
 export const todoEntity = () => {
-  const todoSchema = new mongoose.Schema<TodoSchema>({
+  const todoSchema = new mongoose.Schema<CreateTodoSchema>({
     name: { type: String, required: true },
     priority: { type: String, required: true },
     completed: { type: Boolean, required: true }

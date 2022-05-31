@@ -6,8 +6,8 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"TodoSchema": {
-				"description": "Schema of all ToDos",
+			"CreateTodoSchema": {
+				"description": "Schema for create a ToDo",
 				"properties": {
 					"name": {
 						"type": "string"
@@ -34,7 +34,7 @@
 					},
 					"todos": {
 						"items": {
-							"$ref": "#/components/schemas/TodoSchema"
+							"$ref": "#/components/schemas/CreateTodoSchema"
 						},
 						"type": "array"
 					},
@@ -48,22 +48,6 @@
 				],
 				"type": "object",
 				"description": "Response for petitions sent to ToDos endpoints"
-			},
-			"BasicResponse": {
-				"properties": {
-					"message": {
-						"type": "string"
-					},
-					"status": {
-						"type": "number",
-						"format": "double"
-					}
-				},
-				"required": [
-					"message",
-					"status"
-				],
-				"type": "object"
 			}
 		},
 		"securitySchemes": {}
@@ -91,6 +75,29 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/TodosResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"todos": [
+												{
+													"_id": "6294dd86ecca76f24a89503d",
+													"name": "This is a ToDo created from Postman",
+													"priority": "NORMAL",
+													"completed": false,
+													"__v": 0
+												},
+												{
+													"_id": "6294ddfed8d225386a4f956c",
+													"name": "Second ToDo modified from Postman",
+													"priority": "HIGH",
+													"completed": false,
+													"__v": 0
+												}
+											]
+										}
+									}
 								}
 							}
 						}
@@ -99,12 +106,22 @@
 						"description": "Something went wrong"
 					}
 				},
-				"description": "Endpoint to get all ToDos",
+				"description": "Endpoint to get all ToDos or one by ID",
 				"tags": [
 					"TodoController"
 				],
 				"security": [],
-				"parameters": []
+				"parameters": [
+					{
+						"description": "ToDo ID to obtain",
+						"in": "query",
+						"name": "id",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			},
 			"post": {
 				"operationId": "CreateNewTodo",
@@ -167,7 +184,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/BasicResponse"
+									"$ref": "#/components/schemas/TodosResponse"
 								},
 								"examples": {
 									"Example 1": {
@@ -221,6 +238,63 @@
 						}
 					}
 				}
+			},
+			"delete": {
+				"operationId": "DeleteTodoById",
+				"responses": {
+					"200": {
+						"description": "ToDo deleted successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TodosResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"message": "ToDo with id {ToDo ID} deleted successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TodosResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Error: Something went wrong"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to delete a ToDo by ID",
+				"tags": [
+					"TodoController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "ToDo ID to delete",
+						"in": "query",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		}
 	},

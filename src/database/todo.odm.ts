@@ -1,6 +1,6 @@
 import { todoEntity } from '../models/schemas/todo';
 import { TodosResponse } from '../utils/ResponsesTypes';
-import { TodoSchema, IUpdatedTodo } from '../models/interfaces/todo.interface';
+import { CreateTodoSchema, IUpdatedTodo } from '../models/interfaces/todo.interface';
 import { LogError } from '../utils/Logger';
 
 /**
@@ -29,11 +29,36 @@ export const getAllTodos = async (): Promise<TodosResponse> => {
 };
 
 /**
+ * Method to get ToDo by ID
+ * @param {string} id ToDo ID to obtain
+ * @returns {TodosResponse} Object with response status and todo or error message.
+ */
+export const getTodoById = async (id: string): Promise<TodosResponse> => {
+  const response: TodosResponse = {
+    status: 0
+  };
+  try {
+    const todoModel = todoEntity();
+    await todoModel.findById(id)
+      .then(todo => {
+        response.status = 200;
+        response.todos = [todo];
+      });
+  } catch (error) {
+    response.status = 400;
+    response.message = `${error}`;
+    LogError(`[ODM ERROR] Something went wrong. Details ${error}`);
+  }
+
+  return response;
+};
+
+/**
  * Method to create a ToDo in DB
- * @param {TodoSchema} todo ToDo object to create in DB
+ * @param {CreateTodoSchema} todo ToDo object to create in DB
  * @returns {TodosResponse} Object with status response and confirmation or error message
  */
-export const createTodo = async (todo: TodoSchema): Promise<TodosResponse> => {
+export const createTodo = async (todo: CreateTodoSchema): Promise<TodosResponse> => {
   const response: TodosResponse = {
     status: 0
   };
@@ -57,7 +82,7 @@ export const createTodo = async (todo: TodoSchema): Promise<TodosResponse> => {
 /**
  * Method to update ToDo
  * @param {string} id ToDo ID to update
- * @param {TodoSchema} todoUpdated ToDo with data updated
+ * @param {CreateTodoSchema} todoUpdated ToDo with data updated
  * @returns {TodosResponse} Object with status response and confirmation or error message
  */
 export const updateTodo = async (id: string, todoUpdated: IUpdatedTodo): Promise<TodosResponse> => {
@@ -69,7 +94,33 @@ export const updateTodo = async (id: string, todoUpdated: IUpdatedTodo): Promise
     await todoModel.findByIdAndUpdate(id, todoUpdated)
       .then(() => {
         response.status = 200;
-        response.message = 'ToDo updated successfully';
+        response.message = `ToDo with id ${id} updated successfully`;
+      });
+  } catch (error) {
+    response.status = 400;
+    response.message = `${error}`;
+    LogError(`[ODM ERROR] Something went wrong. Details ${error}`);
+  }
+
+  return response;
+};
+
+/**
+ * Method to delete ToDo by ID
+ * @param {string} id ToDo ID to delete
+ * @returns {TodosResponse} Object with status response and confirmation or error message
+ */
+export const deleteTodo = async (id: string): Promise<TodosResponse> => {
+  const response: TodosResponse = {
+    status: 0
+  };
+
+  try {
+    const todoModel = todoEntity();
+    await todoModel.findByIdAndDelete(id)
+      .then(() => {
+        response.status = 200;
+        response.message = `ToDo with id ${id} deleted successfully`;
       });
   } catch (error) {
     response.status = 400;
