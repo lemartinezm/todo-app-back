@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import authRouter from './auth.routes';
 import todoRouter from './todo.routes';
 import userRouter from './user.routes';
 
@@ -18,5 +19,6 @@ const rootRouter = express();
 rootRouter.use('/', homeRouter);
 rootRouter.use('/todos', todoRouter);
 rootRouter.use('/users', userRouter);
+rootRouter.use('/auth', authRouter);
 
 export default rootRouter;

@@ -6,6 +6,43 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"BasicResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"message",
+					"status"
+				],
+				"type": "object",
+				"description": "Basic Response containing response status and confirmation or error message"
+			},
+			"LoginResponse": {
+				"properties": {
+					"token": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"message",
+					"status"
+				],
+				"type": "object",
+				"description": "Login response including JWT generated"
+			},
 			"TodoSchema": {
 				"description": "Schema returned by DB",
 				"properties": {
@@ -132,6 +169,155 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
+		"/api/auth/register": {
+			"post": {
+				"operationId": "RegisterNewUser",
+				"responses": {
+					"201": {
+						"description": "User registered successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 201,
+											"message": "User registered successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "User registration failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to register new User",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"username": {
+										"type": "string",
+										"description": "User's username"
+									},
+									"email": {
+										"type": "string",
+										"description": "User's email"
+									},
+									"password": {
+										"type": "string",
+										"description": "User's password"
+									}
+								},
+								"required": [
+									"username",
+									"email",
+									"password"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/auth/login": {
+			"post": {
+				"operationId": "LoginUser",
+				"responses": {
+					"200": {
+						"description": "User logged successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LoginResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"message": "Welcome {username}",
+											"token": "{tokenObtained}"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Logging failed",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LoginResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to login User",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"password": {
+										"type": "string",
+										"description": "User's password"
+									},
+									"username": {
+										"type": "string",
+										"description": "User's username"
+									},
+									"email": {
+										"type": "string",
+										"description": "User's email"
+									}
+								},
+								"required": [
+									"password"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/api/todos": {
 			"get": {
 				"operationId": "GetTodos",

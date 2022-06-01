@@ -3,6 +3,7 @@ import { createUser, deleteUserById, getAllUsers, getUserById, updateUserById } 
 import { LogError } from '../utils/Logger';
 import { UsersResponse } from '../utils/ResponsesTypes';
 import { IUserController } from './interfaces/userController.interface';
+import bcrypt from 'bcrypt';
 
 const errorExample: UsersResponse = {
   status: 400,
@@ -66,14 +67,17 @@ export class UserController implements IUserController {
     message: 'User created successfully'
   })
   async createNewUser (@BodyProp('username') username: string | undefined,
-  @BodyProp('email') email: string | undefined,
-  @BodyProp('password') password: string | undefined): Promise<UsersResponse> {
+    @BodyProp('email') email: string | undefined,
+    @BodyProp('password') password: string | undefined): Promise<UsersResponse> {
     let response: UsersResponse;
+
     if (username && email && password) {
+      // Encrypt password
+      const hashedPassword = bcrypt.hashSync(password, 8);
       response = await createUser({
         username,
         email,
-        password,
+        password: hashedPassword,
         todos: []
       });
     } else {
@@ -104,9 +108,9 @@ export class UserController implements IUserController {
     message: 'User updated successfully'
   })
   async updateUser (@Query() id: string,
-  @BodyProp('username') username?: string,
-  @BodyProp('email') email?: string,
-  @BodyProp('password') password?: string): Promise<UsersResponse> {
+    @BodyProp('username') username?: string,
+    @BodyProp('email') email?: string,
+    @BodyProp('password') password?: string): Promise<UsersResponse> {
     let response: UsersResponse;
 
     if (id) {

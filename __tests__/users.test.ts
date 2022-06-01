@@ -43,7 +43,7 @@ const server = request(app);
 
 beforeEach(async () => {
   const userModel = userEntity();
-  await userModel.deleteMany({});
+  await userModel.deleteMany();
   await userModel.create(usersForTest).then(users => { firstUserId = users[0]._id.toString(); });
 });
 
@@ -198,8 +198,6 @@ describe('Users Tests', () => {
   });
 });
 
-// TODO: add possible failure tests
-
-afterAll(() => {
-  mongoose.connection.close();
+afterAll(async () => {
+  await mongoose.disconnect();
 });

@@ -1,6 +1,9 @@
 import { TodoSchema } from '../models/interfaces/todo.interface';
 import { UserSchema } from '../models/interfaces/user.interface';
 
+/**
+ * Basic Response containing response status and confirmation or error message
+ */
 export type BasicResponse = {
   status: number,
   message: string
@@ -22,4 +25,13 @@ export type UsersResponse = {
   status: number,
   users?: UserSchema[],
   message?: string
+};
+
+/**
+ * Login response including JWT generated
+ */
+export type LoginResponse = {
+  status: number,
+  message: string,
+  token?: string
 };
