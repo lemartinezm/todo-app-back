@@ -71,7 +71,7 @@ export const createUser = async (user: CreateUserSchema): Promise<UsersResponse>
     const userModel = userEntity();
     await userModel.create(user)
       .then(() => {
-        response.status = 200;
+        response.status = 201;
         response.message = 'User created successfully';
       });
   } catch (error) {
@@ -131,7 +131,7 @@ export const deleteUserById = async (id: string): Promise<UsersResponse> => {
           response.status = 200;
           response.message = 'User deleted successfully';
         } else {
-          response.status = 400;
+          response.status = 404;
           throw new Error(`User with id ${id} not found`);
         }
       });

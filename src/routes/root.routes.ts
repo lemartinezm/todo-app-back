@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import todoRouter from './todo.routes';
+import userRouter from './user.routes';
 
 // For the home page from API (http://localhost:3000)
 const homeRouter = express.Router();
@@ -16,5 +17,6 @@ const rootRouter = express();
 
 rootRouter.use('/', homeRouter);
 rootRouter.use('/todos', todoRouter);
+rootRouter.use('/users', userRouter);
 
 export default rootRouter;
