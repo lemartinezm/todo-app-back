@@ -1,4 +1,5 @@
 import { TodoSchema } from '../models/interfaces/todo.interface';
+import { UserSchema } from '../models/interfaces/user.interface';
 
 export type BasicResponse = {
   status: number,
@@ -13,3 +14,12 @@ export type TodosResponse = {
   todos?: TodoSchema[],
   message?: string
 }
+
+/**
+ * Response for petitions sent to Users endpoints
+ */
+export type UsersResponse = {
+  status: number,
+  users?: UserSchema[],
+  message?: string
+};

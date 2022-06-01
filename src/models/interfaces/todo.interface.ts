@@ -18,7 +18,7 @@ export interface TodoSchema {
   __v: number
 }
 
-export interface IUpdatedTodo {
+export interface UpdateTodoSchema {
   name?: string,
   priority?: string,
   completed?: boolean

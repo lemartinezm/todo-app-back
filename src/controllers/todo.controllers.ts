@@ -3,7 +3,7 @@ import { TodosResponse } from '../utils/ResponsesTypes';
 import { ITodoController } from './interfaces/todoController.interface';
 import { BodyProp, Delete, Example, Get, Post, Put, Query, Response, Route, SuccessResponse, Tags } from 'tsoa';
 import { LogError } from '../utils/Logger';
-import { IUpdatedTodo } from '../models/interfaces/todo.interface';
+import { UpdateTodoSchema } from '../models/interfaces/todo.interface';
 
 // Example object for error petitions
 const errorExample: TodosResponse = {
@@ -106,7 +106,7 @@ export class TodoController implements ITodoController {
     let response: TodosResponse;
 
     if (id) {
-      const todoUpdated: IUpdatedTodo = {};
+      const todoUpdated: UpdateTodoSchema = {};
       if (name) todoUpdated.name = name;
       if (priority) todoUpdated.priority = priority;
       if (completed !== undefined) todoUpdated.completed = completed;

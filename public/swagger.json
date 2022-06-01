@@ -57,6 +57,64 @@
 				],
 				"type": "object",
 				"description": "Response for petitions sent to ToDos endpoints"
+			},
+			"UserSchema": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"username": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					},
+					"todos": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"__v": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"_id",
+					"username",
+					"email",
+					"password",
+					"todos",
+					"__v"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UsersResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"users": {
+						"items": {
+							"$ref": "#/components/schemas/UserSchema"
+						},
+						"type": "array"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"status"
+				],
+				"type": "object",
+				"description": "Response for petitions sent to Users endpoints"
 			}
 		},
 		"securitySchemes": {}
@@ -343,6 +401,327 @@
 				"parameters": [
 					{
 						"description": "ToDo ID to delete",
+						"in": "query",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/users": {
+			"get": {
+				"operationId": "GetUsers",
+				"responses": {
+					"200": {
+						"description": "Users obtained successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"users": [
+												{
+													"_id": "",
+													"username": "",
+													"email": "",
+													"password": "",
+													"todos": [],
+													"__v": 0
+												},
+												{
+													"_id": "",
+													"username": "",
+													"email": "",
+													"password": "",
+													"todos": [],
+													"__v": 0
+												}
+											]
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "User not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to get all users or one by ID",
+				"tags": [
+					"UserController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "User ID to obtain",
+						"in": "query",
+						"name": "id",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "CreateNewUser",
+				"responses": {
+					"201": {
+						"description": "User created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"message": "User created successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to create a new User",
+				"tags": [
+					"UserController"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"username": {
+										"type": "string",
+										"description": "User's username"
+									},
+									"email": {
+										"type": "string",
+										"description": "User's email"
+									},
+									"password": {
+										"type": "string",
+										"description": "User's password"
+									}
+								},
+								"type": "object"
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"operationId": "UpdateUser",
+				"responses": {
+					"200": {
+						"description": "User updated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"message": "User updated successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "User not found to update",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to update an User by ID",
+				"tags": [
+					"UserController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "User ID to update",
+						"in": "query",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"username": {
+										"type": "string",
+										"description": "Updated username"
+									},
+									"email": {
+										"type": "string",
+										"description": "Updated email"
+									},
+									"password": {
+										"type": "string",
+										"description": "Updated password"
+									}
+								},
+								"type": "object"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteUser",
+				"responses": {
+					"200": {
+						"description": "User deleted successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"message": "User deleted successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "User not found to delete",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to delete User by ID",
+				"tags": [
+					"UserController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "User ID to delete",
 						"in": "query",
 						"name": "id",
 						"required": true,

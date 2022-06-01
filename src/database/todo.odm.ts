@@ -1,6 +1,6 @@
 import { todoEntity } from '../models/schemas/todo';
 import { TodosResponse } from '../utils/ResponsesTypes';
-import { CreateTodoSchema, IUpdatedTodo } from '../models/interfaces/todo.interface';
+import { CreateTodoSchema, UpdateTodoSchema } from '../models/interfaces/todo.interface';
 import { LogError } from '../utils/Logger';
 
 /**
@@ -89,7 +89,7 @@ export const createTodo = async (todo: CreateTodoSchema): Promise<TodosResponse>
  * @param {CreateTodoSchema} todoUpdated ToDo with data updated
  * @returns {TodosResponse} Object with status response and confirmation or error message
  */
-export const updateTodo = async (id: string, todoUpdated: IUpdatedTodo): Promise<TodosResponse> => {
+export const updateTodo = async (id: string, todoUpdated: UpdateTodoSchema): Promise<TodosResponse> => {
   const response: TodosResponse = {
     status: 400
   };
