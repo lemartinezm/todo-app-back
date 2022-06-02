@@ -1,4 +1,4 @@
-import { CreateUserSchema, UpdateUserSchema } from '../models/interfaces/user.interface';
+import { UpdateUserSchema } from '../models/interfaces/user.interface';
 import { userEntity } from '../models/schemas/user';
 import { LogError } from '../utils/Logger';
 import { UsersResponse } from '../utils/ResponsesTypes';
@@ -48,31 +48,6 @@ export const getUserById = async (id: string): Promise<UsersResponse> => {
           response.status = 404;
           throw new Error(`User with id ${id} not found`);
         }
-      });
-  } catch (error) {
-    response.message = `${error}`;
-    LogError(`[ODM ERROR] Something went wrong. Details ${error}`);
-  }
-
-  return response;
-};
-
-/**
- * Method to create a User
- * @param {CreateUserSchema} user User to create
- * @returns {UsersResponse} Object with response status and confirmation or error message
- */
-export const createUser = async (user: CreateUserSchema): Promise<UsersResponse> => {
-  const response: UsersResponse = {
-    status: 400
-  };
-
-  try {
-    const userModel = userEntity();
-    await userModel.create(user)
-      .then(() => {
-        response.status = 201;
-        response.message = 'User created successfully';
       });
   } catch (error) {
     response.message = `${error}`;

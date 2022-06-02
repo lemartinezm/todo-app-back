@@ -58,6 +58,9 @@
 					"completed": {
 						"type": "boolean"
 					},
+					"creator": {
+						"type": "string"
+					},
 					"__v": {
 						"type": "number",
 						"format": "double"
@@ -68,6 +71,7 @@
 					"name",
 					"priority",
 					"completed",
+					"creator",
 					"__v"
 				],
 				"type": "object",
@@ -339,6 +343,7 @@
 													"name": "This is a ToDo example",
 													"priority": "NORMAL",
 													"completed": false,
+													"creator": "{creatorId}",
 													"__v": 0
 												},
 												{
@@ -346,6 +351,7 @@
 													"name": "Second ToDo example",
 													"priority": "HIGH",
 													"completed": false,
+													"creator": "{creatorId}",
 													"__v": 0
 												}
 											]
@@ -595,6 +601,29 @@
 						}
 					}
 				]
+			}
+		},
+		"/api/todos/me": {
+			"get": {
+				"operationId": "GetMyTodos",
+				"responses": {
+					"200": {
+						"description": "Object with status code and confirmation or error message.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TodosResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to Todos of User",
+				"tags": [
+					"TodoController"
+				],
+				"security": [],
+				"parameters": []
 			}
 		},
 		"/api/users": {

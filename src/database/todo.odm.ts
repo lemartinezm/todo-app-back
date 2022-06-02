@@ -58,6 +58,35 @@ export const getTodoById = async (id: string): Promise<TodosResponse> => {
 };
 
 /**
+ * Method to get ToDos by creator ID
+ * @param {string} userId User'd ID to obtain ToDos
+ * @returns {TodosResponse} Object with response status and ToDos or error message.
+ */
+export const getTodosByCreatorId = async (userId: string): Promise<TodosResponse> => {
+  const response: TodosResponse = {
+    status: 400
+  };
+  try {
+    const todoModel = todoEntity();
+    await todoModel.find({ creator: userId })
+      .then(todos => {
+        if (todos) {
+          response.status = 200;
+          response.todos = todos;
+        } else {
+          response.status = 400;
+          throw new Error('Something went wrong');
+        }
+      });
+  } catch (error) {
+    response.message = `${error}`;
+    LogError(`[ODM ERROR] Something went wrong. Details ${error}`);
+  }
+
+  return response;
+};
+
+/**
  * Method to create a ToDo in DB
  * @param {CreateTodoSchema} todo ToDo object to create in DB
  * @returns {TodosResponse} Object with status response and confirmation or error message

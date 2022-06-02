@@ -4,7 +4,8 @@
 export interface CreateTodoSchema {
   name: string,
   priority: string,
-  completed: boolean
+  completed: boolean,
+  creator: string
 }
 
 /**
@@ -15,6 +16,7 @@ export interface TodoSchema {
   name: string,
   priority: string,
   completed: boolean,
+  creator: string,
   __v: number
 }
 

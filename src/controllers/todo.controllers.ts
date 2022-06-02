@@ -1,7 +1,7 @@
-import { createTodo, deleteTodo, getAllTodos, getTodoById, updateTodo } from '../database/todo.odm';
+import { createTodo, deleteTodo, getAllTodos, getTodosByCreatorId, getTodoById, updateTodo } from '../database/todo.odm';
 import { TodosResponse } from '../utils/ResponsesTypes';
 import { ITodoController } from './interfaces/todoController.interface';
-import { BodyProp, Delete, Example, Get, Post, Put, Query, Response, Route, SuccessResponse, Tags } from 'tsoa';
+import { BodyProp, Delete, Example, Get, Inject, Post, Put, Query, Response, Route, SuccessResponse, Tags } from 'tsoa';
 import { LogError } from '../utils/Logger';
 import { UpdateTodoSchema } from '../models/interfaces/todo.interface';
 
@@ -30,6 +30,7 @@ export class TodoController implements ITodoController {
         name: 'This is a ToDo example',
         priority: 'NORMAL',
         completed: false,
+        creator: '{creatorId}',
         __v: 0
       },
       {
@@ -37,6 +38,7 @@ export class TodoController implements ITodoController {
         name: 'Second ToDo example',
         priority: 'HIGH',
         completed: false,
+        creator: '{creatorId}',
         __v: 0
       }
     ]
@@ -52,6 +54,17 @@ export class TodoController implements ITodoController {
   };
 
   /**
+   * Endpoint to Todos of User
+   * @param {string} userId User's ID
+   * @returns {TodosResponse} Object with status code and confirmation or error message.
+   */
+  // TODO: finish this endpoint (route)
+  @Get('/me')
+  async getMyTodos (@Inject() userId: string): Promise<TodosResponse> {
+    return await getTodosByCreatorId(userId);
+  }
+
+  /**
    * Endpoint to create a ToDo
    * @param {string} name ToDo name
    * @param {string} priority ToDo priority
@@ -65,13 +78,15 @@ export class TodoController implements ITodoController {
     message: 'ToDo created successfully'
   })
   async createNewTodo (@BodyProp('name') name: string | undefined,
-    @BodyProp('priority') priority: string | undefined): Promise<TodosResponse> {
+    @BodyProp('priority') priority: string | undefined,
+    @Inject() userId: string): Promise<TodosResponse> {
     let response: TodosResponse;
     if (name && priority) {
       response = await createTodo({
         name,
         priority,
-        completed: false
+        completed: false,
+        creator: userId
       });
     } else {
       response = {

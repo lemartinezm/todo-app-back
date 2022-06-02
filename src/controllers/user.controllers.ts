@@ -1,9 +1,8 @@
-import { Get, Query, Route, SuccessResponse, Tags, Response, Example, Post, BodyProp, Put, Delete } from 'tsoa';
-import { createUser, deleteUserById, getAllUsers, getUserById, updateUserById } from '../database/user.odm';
+import { Get, Query, Route, SuccessResponse, Tags, Response, Example, BodyProp, Put, Delete } from 'tsoa';
+import { deleteUserById, getAllUsers, getUserById, updateUserById } from '../database/user.odm';
 import { LogError } from '../utils/Logger';
 import { UsersResponse } from '../utils/ResponsesTypes';
 import { IUserController } from './interfaces/userController.interface';
-import bcrypt from 'bcrypt';
 
 const errorExample: UsersResponse = {
   status: 400,
@@ -49,45 +48,6 @@ export class UserController implements IUserController {
     } else {
       response = await getAllUsers();
     }
-    return response;
-  }
-
-  /**
-   * Endpoint to create a new User
-   * @param {string} username User's username
-   * @param {string} email User's email
-   * @param {string} password User's password
-   * @returns {UsersResponse} Object with response status and confirmation or error message
-   */
-  @Post('/')
-  @SuccessResponse(201, 'User created successfully')
-  @Response<UsersResponse>(400, 'Something went wrong', errorExample)
-  @Example({
-    status: 200,
-    message: 'User created successfully'
-  })
-  async createNewUser (@BodyProp('username') username: string | undefined,
-    @BodyProp('email') email: string | undefined,
-    @BodyProp('password') password: string | undefined): Promise<UsersResponse> {
-    let response: UsersResponse;
-
-    if (username && email && password) {
-      // Encrypt password
-      const hashedPassword = bcrypt.hashSync(password, 8);
-      response = await createUser({
-        username,
-        email,
-        password: hashedPassword,
-        todos: []
-      });
-    } else {
-      response = {
-        status: 400,
-        message: 'Please, complete all fields'
-      };
-      LogError(`[api/users] ${response.message}`);
-    }
-
     return response;
   }
 
