@@ -100,7 +100,7 @@ export const loginUserWithEmail = async (user: LoginUserSchema): Promise<LoginRe
 
           // Login successful
           response.status = 200;
-          response.message = `Welcome ${userFound.email}`;
+          response.message = `Welcome ${userFound.username}`;
           // Create JWT
           response.token = jwt.sign(
             { id: userFound._id },

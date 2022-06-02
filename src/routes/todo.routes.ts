@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { TodoController } from '../controllers/todo.controllers';
+import verifyToken from '../middlewares/verifyToken.middleware';
 import { TodosResponse } from '../utils/ResponsesTypes';
 
 const todoRouter = express.Router();
@@ -8,7 +9,7 @@ todoRouter.use(express.json());
 
 todoRouter
   // To Get ToDos or one by ID
-  .get('/', async (req: Request, res: Response) => {
+  .get('/', verifyToken, async (req: Request, res: Response) => {
     // Variables for controller
     const id: any = req.query?.id;
 
@@ -18,7 +19,7 @@ todoRouter
   })
 
   // To create a new ToDo
-  .post('/', async (req: Request, res: Response) => {
+  .post('/', verifyToken, async (req: Request, res: Response) => {
     // Variables for controller
     const name: string | undefined = req.body?.name;
     const priority: string | undefined = req.body?.priority;
@@ -29,7 +30,7 @@ todoRouter
   })
 
   // To update a ToDo by ID
-  .put('/', async (req: Request, res: Response) => {
+  .put('/', verifyToken, async (req: Request, res: Response) => {
     // Variables for controller
     const id: any = req.query?.id;
     const name: string | undefined = req.body?.name;
@@ -42,7 +43,7 @@ todoRouter
   })
 
   // To delete a ToDo by ID
-  .delete('/', async (req: Request, res: Response) => {
+  .delete('/', verifyToken, async (req: Request, res: Response) => {
     // Variables for controller
     const id: any = req.query?.id;
 
