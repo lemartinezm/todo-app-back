@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { TodoController } from '../controllers/todo.controllers';
+import verifyAdmin from '../middlewares/verifyAdmin.middleware';
 import verifyToken from '../middlewares/verifyToken.middleware';
 import { TodosResponse } from '../utils/ResponsesTypes';
 
@@ -9,7 +10,7 @@ todoRouter.use(express.json());
 
 todoRouter
   // To Get ToDos or one by ID
-  .get('/', verifyToken, async (req: Request, res: Response) => {
+  .get('/', verifyAdmin, verifyToken, async (req: Request, res: Response) => {
     // Variables for controller
     const todoId: any = req.query?.id;
 
@@ -41,6 +42,7 @@ todoRouter
   })
 
   // To update a ToDo by ID
+  // TODO: update only if you are the creator
   .put('/', verifyToken, async (req: Request, res: Response) => {
     // Variables for controller
     const todoId: any = req.query?.id;
@@ -54,6 +56,7 @@ todoRouter
   })
 
   // To delete a ToDo by ID
+  // TODO: delete only if you are the creator
   .delete('/', verifyToken, async (req: Request, res: Response) => {
     // Variables for controller
     const todoId: any = req.query?.id;

@@ -35,3 +35,11 @@ export type LoginResponse = {
   message: string,
   token?: string
 };
+
+/**
+ * Team Response
+ */
+export type TeamResponse = {
+  status: number,
+  messsage: string
+};

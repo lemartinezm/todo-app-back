@@ -3,7 +3,7 @@ import { BasicResponse, LoginResponse } from '../utils/ResponsesTypes';
 import { IAuthController } from './interfaces/authController.interface';
 import bcrypt from 'bcrypt';
 import { LogError } from '../utils/Logger';
-import { BodyProp, Example, Post, Response, Route, SuccessResponse } from 'tsoa';
+import { BodyProp, Example, Post, Response, Route, SuccessResponse, Tags } from 'tsoa';
 
 const errorExample: BasicResponse = {
   status: 400,
@@ -11,6 +11,7 @@ const errorExample: BasicResponse = {
 };
 
 @Route('api/auth')
+@Tags('AuthController')
 export class AuthController implements IAuthController {
   /**
    * Endpoint to register new User

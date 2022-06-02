@@ -3,6 +3,7 @@ import authRouter from './auth.routes';
 import todoRouter from './todo.routes';
 import userRouter from './user.routes';
 import cors from 'cors';
+import teamRouter from './team.routes';
 
 // For the home page from API (http://localhost:3000)
 const homeRouter = express.Router();
@@ -22,5 +23,6 @@ rootRouter.use('/', homeRouter);
 rootRouter.use('/todos', todoRouter);
 rootRouter.use('/users', userRouter);
 rootRouter.use('/auth', authRouter);
+rootRouter.use('/teams', teamRouter);
 
 export default rootRouter;

@@ -43,6 +43,14 @@
 				"type": "object",
 				"description": "Login response including JWT generated"
 			},
+			"updateTeamOperations": {
+				"enum": [
+					"ADD_MEMBER",
+					"ADD_TODO",
+					"CHANGE_LEADER"
+				],
+				"type": "string"
+			},
 			"TodoSchema": {
 				"description": "Schema returned by DB",
 				"properties": {
@@ -215,6 +223,9 @@
 					}
 				},
 				"description": "Endpoint to register new User",
+				"tags": [
+					"AuthController"
+				],
 				"security": [],
 				"parameters": [],
 				"requestBody": {
@@ -291,6 +302,9 @@
 					}
 				},
 				"description": "Endpoint to login User",
+				"tags": [
+					"AuthController"
+				],
 				"security": [],
 				"parameters": [],
 				"requestBody": {
@@ -314,6 +328,77 @@
 								},
 								"required": [
 									"password"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/teams": {
+			"post": {
+				"operationId": "CreateNewTeam",
+				"responses": {
+					"200": {
+						"description": "Object with response status and confirmation or error message",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to create New Team",
+				"tags": [
+					"TeamController"
+				],
+				"security": [],
+				"parameters": []
+			},
+			"put": {
+				"operationId": "UpdateTeam",
+				"responses": {
+					"200": {
+						"description": "Object with response status and confirmation or error message",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to update a Team",
+				"tags": [
+					"TeamController"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"teamId": {
+										"type": "string",
+										"description": "Team to update"
+									},
+									"updateOperation": {
+										"$ref": "#/components/schemas/updateTeamOperations",
+										"description": "Type of update operation"
+									},
+									"data": {
+										"description": "Data to update"
+									}
+								},
+								"required": [
+									"teamId",
+									"updateOperation"
 								],
 								"type": "object"
 							}
@@ -700,77 +785,6 @@
 						}
 					}
 				]
-			},
-			"post": {
-				"operationId": "CreateNewUser",
-				"responses": {
-					"201": {
-						"description": "User created successfully",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/UsersResponse"
-								},
-								"examples": {
-									"Example 1": {
-										"value": {
-											"status": 200,
-											"message": "User created successfully"
-										}
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Something went wrong",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/UsersResponse"
-								},
-								"examples": {
-									"Example 1": {
-										"value": {
-											"status": 400,
-											"message": "Something went wrong"
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"description": "Endpoint to create a new User",
-				"tags": [
-					"UserController"
-				],
-				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"properties": {
-									"username": {
-										"type": "string",
-										"description": "User's username"
-									},
-									"email": {
-										"type": "string",
-										"description": "User's email"
-									},
-									"password": {
-										"type": "string",
-										"description": "User's password"
-									}
-								},
-								"type": "object"
-							}
-						}
-					}
-				}
 			},
 			"put": {
 				"operationId": "UpdateUser",
