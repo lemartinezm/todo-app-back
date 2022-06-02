@@ -34,10 +34,11 @@ todoRouter
     // Variables for controller
     const name: string | undefined = req.body?.name;
     const priority: string | undefined = req.body?.priority;
+    const teamId: string | undefined = req.body?.teamId;
     const userId: string = res.locals.userId;
 
     const controller: TodoController = new TodoController();
-    const response: TodosResponse = await controller.createNewTodo(name, priority, userId);
+    const response: TodosResponse = await controller.createNewTodo(name, priority, userId, teamId);
     return res.status(response.status).send(response);
   })
 

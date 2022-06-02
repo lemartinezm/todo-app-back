@@ -7,8 +7,17 @@ const teamRouter = express.Router();
 teamRouter.use(express.json());
 
 teamRouter
+  // * To get my teams
+  .get('/me', verifyToken, async (req: Request, res: Response) => {
+    const loggedUserId: any = res.locals.userId;
+
+    const controller: TeamController = new TeamController();
+    const response = await controller.getTeamsByParticipant(loggedUserId);
+    return res.status(response.status).send(response);
+  })
+
   // * To create new Team
-  .post('/create', verifyToken, async (req: Request, res: Response) => {
+  .post('/', verifyToken, async (req: Request, res: Response) => {
     const leaderId: any = res.locals.userId;
     const teamName: any = req.body?.teamName;
 
@@ -18,7 +27,7 @@ teamRouter
   })
 
   // * To update existing team
-  .put('/update', verifyToken, async (req: Request, res: Response) => {
+  .put('/', verifyToken, async (req: Request, res: Response) => {
     const loggedUserId: any = res.locals.userId;
     const teamId: any = req.body?.teamId;
     const updateOperation: any = req.body?.updateOperation;
@@ -26,6 +35,16 @@ teamRouter
 
     const controller: TeamController = new TeamController();
     const response = await controller.updateTeam(loggedUserId, teamId, updateOperation, data);
+    return res.status(response.status).send(response);
+  })
+
+  // * To delete a Team
+  .delete('/', verifyToken, async (req: Request, res: Response) => {
+    const loggedUserId: any = res.locals.userId;
+    const teamId: any = req.body?.teamId;
+
+    const controller: TeamController = new TeamController();
+    const response = await controller.deleteTeam(loggedUserId, teamId);
     return res.status(response.status).send(response);
   });
 

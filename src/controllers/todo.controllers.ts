@@ -58,7 +58,6 @@ export class TodoController implements ITodoController {
    * @param {string} userId User's ID
    * @returns {TodosResponse} Object with status code and confirmation or error message.
    */
-  // TODO: finish this endpoint (route)
   @Get('/me')
   async getMyTodos (@Inject() userId: string): Promise<TodosResponse> {
     return await getTodosByCreatorId(userId);
@@ -68,6 +67,8 @@ export class TodoController implements ITodoController {
    * Endpoint to create a ToDo
    * @param {string} name ToDo name
    * @param {string} priority ToDo priority
+   * @param {string} loggedUserId Logged User ID
+   * @param {string} teamId Team ID to add todo
    * @returns {TodosResponse} Object with status code and confirmation or error message.
    */
   @Post('/')
@@ -77,17 +78,20 @@ export class TodoController implements ITodoController {
     status: 201,
     message: 'ToDo created successfully'
   })
-  async createNewTodo (@BodyProp('name') name: string | undefined,
+  async createNewTodo (
+    @BodyProp('name') name: string | undefined,
     @BodyProp('priority') priority: string | undefined,
-    @Inject() userId: string): Promise<TodosResponse> {
+    @Inject() loggedUserId: string,
+    @BodyProp('teamId') teamId?: string
+  ): Promise<TodosResponse> {
     let response: TodosResponse;
     if (name && priority) {
       response = await createTodo({
         name,
         priority,
         completed: false,
-        creator: userId
-      });
+        creator: loggedUserId
+      }, teamId);
     } else {
       response = {
         status: 400,
@@ -114,10 +118,12 @@ export class TodoController implements ITodoController {
     status: 200,
     message: 'ToDo with id {ToDo ID} updated successfully'
   })
-  async updateTodoById (@Query() id: string,
+  async updateTodoById (
+    @Query() id: string,
     @BodyProp('name') name?: string,
     @BodyProp('priority') priority?: string,
-    @BodyProp('completed') completed?: boolean): Promise<TodosResponse> {
+    @BodyProp('completed') completed?: boolean
+  ): Promise<TodosResponse> {
     let response: TodosResponse;
 
     if (id) {

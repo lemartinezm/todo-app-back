@@ -41,5 +41,6 @@ export type LoginResponse = {
  */
 export type TeamResponse = {
   status: number,
-  messsage: string
+  message?: string,
+  teams?: any[]
 };

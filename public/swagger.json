@@ -43,6 +43,26 @@
 				"type": "object",
 				"description": "Login response including JWT generated"
 			},
+			"TeamResponse": {
+				"properties": {
+					"teams": {
+						"items": {},
+						"type": "array"
+					},
+					"message": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"status"
+				],
+				"type": "object",
+				"description": "Team Response"
+			},
 			"updateTeamOperations": {
 				"enum": [
 					"ADD_MEMBER",
@@ -336,6 +356,29 @@
 				}
 			}
 		},
+		"/api/teams/me": {
+			"get": {
+				"operationId": "GetTeamsByParticipant",
+				"responses": {
+					"200": {
+						"description": "Object with response status and teams or error message",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TeamResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to get teams for logged user",
+				"tags": [
+					"TeamController"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
 		"/api/teams": {
 			"post": {
 				"operationId": "CreateNewTeam",
@@ -405,6 +448,27 @@
 						}
 					}
 				}
+			},
+			"delete": {
+				"operationId": "DeleteTeam",
+				"responses": {
+					"200": {
+						"description": "Object with response status and confirmation or error message",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BasicResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to delete a Team",
+				"tags": [
+					"TeamController"
+				],
+				"security": [],
+				"parameters": []
 			}
 		},
 		"/api/todos": {
@@ -541,6 +605,10 @@
 									"priority": {
 										"type": "string",
 										"description": "ToDo priority"
+									},
+									"teamId": {
+										"type": "string",
+										"description": "Team ID to add todo"
 									}
 								},
 								"type": "object"

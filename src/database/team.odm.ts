@@ -2,7 +2,36 @@ import { CreateTeamSchema } from '../models/interfaces/team.interface';
 import { teamEntity } from '../models/schemas/team';
 import { updateTeamOperations } from '../utils/Enums';
 import { LogError } from '../utils/Logger';
-import { BasicResponse } from '../utils/ResponsesTypes';
+import { BasicResponse, TeamResponse } from '../utils/ResponsesTypes';
+
+/**
+ * Method to get Teams by participant ID
+ * @param {string} loggedUserId Logged User ID
+ * @returns {TeamResponse} Object with response status
+ */
+export const getTeamsByParticipantId = async (loggedUserId: string): Promise<TeamResponse> => {
+  const response: TeamResponse = {
+    status: 400
+  };
+
+  try {
+    const teamModel = teamEntity();
+    await teamModel.find({ participants: loggedUserId })
+      .then(teams => {
+        if (teams.length > 0) {
+          response.status = 200;
+          response.teams = teams;
+        } else {
+          throw new Error('You don\'t participate in any team');
+        }
+      });
+  } catch (error) {
+    response.message = `${error}`;
+    LogError(`[ODM ERROR] ${error}`);
+  }
+
+  return response;
+};
 
 /**
  * Method to create a Team
@@ -52,9 +81,14 @@ export const updateTeamById = async (loggedUserId: string,
 
     await teamModel.findById(teamId)
       .then(teamFound => {
-        if (teamFound.leader.toString() !== loggedUserId) {
-          throw new Error('You can\'t modify the team because you\'re not the team leader');
-        };
+        if (teamFound) {
+          if (teamFound.leader.toString() !== loggedUserId) {
+            throw new Error('You can\'t modify the team because you\'re not the team leader');
+          };
+        } else {
+          response.status = 404;
+          throw new Error('Team not found');
+        }
       });
 
     switch (updateOperation) {
@@ -90,5 +124,38 @@ export const updateTeamById = async (loggedUserId: string,
     response.message = `Failure updating team. ${error}`;
     LogError(`[ODM ERROR] ${error}`);
   }
+  return response;
+};
+
+/**
+ * Method to delete team by ID
+ * @param {string} loggedUserId Logged User ID
+ * @param {string} teamId Team ID to delete
+ * @returns {BasicResponse} Object with response status and confirmation or error message
+ */
+export const deleteTeamById = async (loggedUserId: string, teamId: string): Promise<BasicResponse> => {
+  const response: BasicResponse = {
+    status: 400,
+    message: ''
+  };
+
+  try {
+    const teamModel = teamEntity();
+    await teamModel.findById(teamId)
+      .then(async (teamFound) => {
+        if (teamFound.leader.toString() !== loggedUserId) {
+          throw new Error('You are not the leader to delete this team');
+        }
+        await teamModel.findByIdAndDelete(teamId)
+          .then(() => {
+            response.status = 200;
+            response.message = `Team with ID ${teamId} deleted successfully`;
+          });
+      });
+  } catch (error) {
+    response.message = `${error}`;
+    LogError(`[ODM ERROR] ${error}`);
+  }
+
   return response;
 };

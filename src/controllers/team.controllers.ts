@@ -1,13 +1,23 @@
-import { BodyProp, Inject, Post, Put, Route, Tags } from 'tsoa';
-import { createTeam, updateTeamById } from '../database/team.odm';
+import { BodyProp, Delete, Get, Inject, Post, Put, Route, Tags } from 'tsoa';
+import { createTeam, deleteTeamById, getTeamsByParticipantId, updateTeamById } from '../database/team.odm';
 import { updateTeamOperations } from '../utils/Enums';
-import { BasicResponse } from '../utils/ResponsesTypes';
+import { BasicResponse, TeamResponse } from '../utils/ResponsesTypes';
 import { ITeamController } from './interfaces/teamController.interface';
 
 @Route('/api/teams')
 @Tags('TeamController')
 export class TeamController implements ITeamController {
   // TODO: add examples, responses for documentation
+  /**
+   * Endpoint to get teams for logged user
+   * @param {string} loggedUserId Logged User ID
+   * @returns {TeamResponse} Object with response status and teams or error message
+   */
+  @Get('/me')
+  async getTeamsByParticipant (@Inject() loggedUserId: string): Promise<TeamResponse> {
+    return await getTeamsByParticipantId(loggedUserId);
+  }
+
   /**
    * Endpoint to create New Team
    * @param {string} leaderId User ID of who is creating the team
@@ -43,5 +53,16 @@ export class TeamController implements ITeamController {
     @BodyProp('updateOperation') updateOperation: updateTeamOperations,
     @BodyProp('data') data?: any): Promise<BasicResponse> {
     return await updateTeamById(loggedUserId, teamId, updateOperation, data);
+  }
+
+  /**
+   * Endpoint to delete a Team
+   * @param {string} loggedUserId Logged User ID
+   * @param {string} teamId Team ID to delete
+   * @returns {BasicResponse} Object with response status and confirmation or error message
+   */
+  @Delete('/')
+  async deleteTeam (@Inject() loggedUserId: string, @BodyProp('teamId') teamId: string): Promise<BasicResponse> {
+    return await deleteTeamById(loggedUserId, teamId);
   }
 }

@@ -2,6 +2,8 @@ import { todoEntity } from '../models/schemas/todo';
 import { TodosResponse } from '../utils/ResponsesTypes';
 import { CreateTodoSchema, UpdateTodoSchema } from '../models/interfaces/todo.interface';
 import { LogError } from '../utils/Logger';
+import { updateTeamById } from './team.odm';
+import { updateTeamOperations } from '../utils/Enums';
 
 /**
  * Method to Get All ToDos
@@ -91,21 +93,32 @@ export const getTodosByCreatorId = async (userId: string): Promise<TodosResponse
  * @param {CreateTodoSchema} todo ToDo object to create in DB
  * @returns {TodosResponse} Object with status response and confirmation or error message
  */
-export const createTodo = async (todo: CreateTodoSchema): Promise<TodosResponse> => {
+export const createTodo = async (todo: CreateTodoSchema, teamId?: string): Promise<TodosResponse> => {
   const response: TodosResponse = {
-    status: 0
+    status: 400,
+    message: ''
   };
 
   try {
     const todoModel = todoEntity();
     await todoModel.create(todo)
-      .then(() => {
+      .then(async (todoCreated) => {
         response.status = 201;
         response.message = 'ToDo created successfully';
+
+        // Add to team if there is teamId
+        if (teamId) {
+          await updateTeamById(todo.creator, teamId, updateTeamOperations.ADD_TODO, todoCreated._id.toString())
+            .then((updateResponse) => {
+              if (updateResponse.status !== 200) {
+                throw new Error('Can\'t be added to the team');
+              }
+              response.message = response.message?.concat('. ', `ToDo added to team ${teamId}`);
+            });
+        }
       });
   } catch (error) {
-    response.status = 400;
-    response.message = `${error}`;
+    response.message = response.message?.concat('. ', `${error}`);
     LogError(`[ODM ERROR] Something went wrong. Details ${error}`);
   }
 
