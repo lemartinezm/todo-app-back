@@ -21,6 +21,14 @@
     "url": "https://github.com/lemartinezm/todo-app-back/issues"
   },
   "homepage": "https://github.com/lemartinezm/todo-app-back#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.3.4",
+    "swagger-ui-express": "^4.4.0"
+  },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/eslint": "^8.4.2",
@@ -47,14 +55,6 @@
     "ts-node": "^10.8.0",
     "tsoa": "^4.1.0",
     "typescript": "^4.7.2"
-  },
-  "dependencies": {
-    "bcrypt": "^5.0.1",
-    "dotenv": "^16.0.1",
-    "express": "^4.18.1",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.3.4",
-    "swagger-ui-express": "^4.4.0"
   },
   "engines": {
     "node": "16.x"
