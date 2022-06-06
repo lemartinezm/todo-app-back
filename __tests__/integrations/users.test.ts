@@ -1,7 +1,12 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
-import { userEntity } from '../src/models/schemas/user';
-import app from '../src/server/index';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import { userEntity } from '../../src/models/schemas/user';
+import app from '../../src/server/index';
+
+dotenv.config();
+const SECRET_KEY = process.env.SECRET_KEY;
 
 // Data for tests
 const usersForTest: any[] = [
@@ -21,19 +26,14 @@ const usersForTest: any[] = [
     password: 'anaPass'
   }
 ];
-const newUser: any = {
-  username: 'claudia123',
-  email: 'claudia@email.com',
-  password: 'claudiaPass'
-};
+const usersTokens: any[] = [];
+
 const updatedUser: any = {
   username: 'claudia12345',
   email: 'claudia123@email.com',
   password: 'claudiaPass'
 };
-const incompleteUser: any = {
-  username: 'luis123'
-};
+
 let firstUserId: string;
 const wrongUserId: string = '1a9a7f0584019a636a3';
 const notFoundUserId: string = '1a9a7fc7405840159af636a3';
@@ -44,7 +44,18 @@ const server = request(app);
 beforeEach(async () => {
   const userModel = userEntity();
   await userModel.deleteMany();
-  await userModel.create(usersForTest).then(users => { firstUserId = users[0]._id.toString(); });
+  await userModel.create(usersForTest).then(users => {
+    users.map((user: any, index: number) => {
+      // Save tokens
+      usersTokens.push(jwt.sign(
+        { id: user._id.toString() },
+        SECRET_KEY!,
+        { expiresIn: '3h' }
+      ));
+      return null;
+    });
+    firstUserId = users[0]._id.toString();
+  });
 });
 
 describe('Users Tests', () => {
@@ -53,6 +64,7 @@ describe('Users Tests', () => {
   test('[/api/users] Success getting all users', async () => {
     await server
       .get('/api/users')
+      .set({ 'x-access-token': usersTokens[0] })
       .then(response => {
         expect(response.status).toEqual(200);
         expect(response.body.users).toHaveLength(usersForTest.length);
@@ -62,6 +74,7 @@ describe('Users Tests', () => {
   test('[/api/users?id={userID}] Success getting user by ID', async () => {
     await server
       .get('/api/users')
+      .set({ 'x-access-token': usersTokens[0] })
       .query({ id: firstUserId })
       .then(response => {
         expect(response.status).toEqual(200);
@@ -72,6 +85,7 @@ describe('Users Tests', () => {
   test('[/api/users?id={userID}] Failure getting user by ID (wrong ID)', async () => {
     await server
       .get('/api/users')
+      .set({ 'x-access-token': usersTokens[0] })
       .query({ id: wrongUserId })
       .then(response => {
         expect(response.status).toEqual(400);
@@ -82,32 +96,11 @@ describe('Users Tests', () => {
   test('[/api/users?id={userID}] Failure getting user by ID (not found User)', async () => {
     await server
       .get('/api/users')
+      .set({ 'x-access-token': usersTokens[0] })
       .query({ id: notFoundUserId })
       .then(response => {
         expect(response.status).toEqual(404);
         expect(response.body.message).toBeDefined();
-      });
-  });
-
-  // * POST Tests
-
-  test('[/api/users] Success creating user', async () => {
-    await server
-      .post('/api/users')
-      .send(newUser)
-      .then(response => {
-        expect(response.status).toEqual(201);
-        expect(response.body.message).toEqual('User created successfully');
-      });
-  });
-
-  test('[/api/users] Failure creating user (missing fields)', async () => {
-    await server
-      .post('/api/users')
-      .send(incompleteUser)
-      .then(response => {
-        expect(response.status).toEqual(400);
-        expect(response.body.message).toEqual('Please, complete all fields');
       });
   });
 
@@ -116,6 +109,7 @@ describe('Users Tests', () => {
   test('[/api/users?id={userId}] Success updating user', async () => {
     await server
       .put('/api/users')
+      .set({ 'x-access-token': usersTokens[0] })
       .query({ id: firstUserId })
       .send(updatedUser)
       .then(response => {
@@ -127,6 +121,7 @@ describe('Users Tests', () => {
   test('[/api/users?id={userId}] Failure updating user (wrong ID)', async () => {
     await server
       .put('/api/users')
+      .set({ 'x-access-token': usersTokens[0] })
       .query({ id: wrongUserId })
       .send(updatedUser)
       .then(response => {
@@ -138,6 +133,7 @@ describe('Users Tests', () => {
   test('[/api/users?id={userId}] Failure updating user (user not found)', async () => {
     await server
       .put('/api/users')
+      .set({ 'x-access-token': usersTokens[0] })
       .query({ id: notFoundUserId })
       .send(updatedUser)
       .then(response => {
@@ -149,6 +145,7 @@ describe('Users Tests', () => {
   test('[/api/users?id={userId}] Failure updating user (missing ID)', async () => {
     await server
       .put('/api/users')
+      .set({ 'x-access-token': usersTokens[0] })
       .send(updatedUser)
       .then(response => {
         expect(response.status).toEqual(400);
@@ -161,6 +158,7 @@ describe('Users Tests', () => {
   test('[/api/users?id={userId}] Success deleting user', async () => {
     await server
       .delete('/api/users')
+      .set({ 'x-access-token': usersTokens[0] })
       .query({ id: firstUserId })
       .then(response => {
         expect(response.status).toEqual(200);
@@ -171,6 +169,7 @@ describe('Users Tests', () => {
   test('[/api/users?id={userId}] Failure deleting user (wrong ID)', async () => {
     await server
       .delete('/api/users')
+      .set({ 'x-access-token': usersTokens[0] })
       .query({ id: wrongUserId })
       .then(response => {
         expect(response.status).toEqual(400);
@@ -181,6 +180,7 @@ describe('Users Tests', () => {
   test('[/api/users?id={userId}] Failure deleting user (user not found)', async () => {
     await server
       .delete('/api/users')
+      .set({ 'x-access-token': usersTokens[0] })
       .query({ id: notFoundUserId })
       .then(response => {
         expect(response.status).toEqual(404);
@@ -191,6 +191,7 @@ describe('Users Tests', () => {
   test('[/api/users?id={userId}] Failure deleting user (missing ID)', async () => {
     await server
       .delete('/api/users')
+      .set({ 'x-access-token': usersTokens[0] })
       .then(response => {
         expect(response.status).toEqual(400);
         expect(response.body.message).toEqual('Missing User ID to delete');

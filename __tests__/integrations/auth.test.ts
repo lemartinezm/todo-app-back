@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
 import bcrypt from 'bcrypt';
-import { userEntity } from '../src/models/schemas/user';
-import app from '../src/server/index';
+import { userEntity } from '../../src/models/schemas/user';
+import app from '../../src/server/index';
 
 // Data for tests
 const usersForTest: any[] = [
@@ -30,11 +30,23 @@ const newUser: any = {
 const incompleteUser: any = {
   username: 'luis123'
 };
-const loginUser: any = {
+const loginWithEmail: any = {
   email: 'ana@email.com',
   password: 'anaPass'
 };
-const loginUserWrongPass: any = {
+const loginWithWrongEmail: any = {
+  email: 'ana123@email.com',
+  password: 'anaPass'
+};
+const loginWithUsername: any = {
+  username: 'jose123',
+  password: 'josePass'
+};
+const loginWithWrongUsername: any = {
+  username: 'jose123123',
+  password: 'josePass'
+};
+const loginWithWrongPass: any = {
   email: 'jose@email.com',
   password: 'sdf1fg645'
 };
@@ -71,23 +83,62 @@ describe('Auth Tests', () => {
   });
 
   // * Login Tests
-  test('[/api/auth/login] Success logging user', async () => {
+  test('[/api/auth/login] Success logging user with email', async () => {
     await server
       .post('/api/auth/login')
-      .send(loginUser)
+      .send(loginWithEmail)
       .then(response => {
         expect(response.status).toEqual(200);
         expect(response.body).toHaveProperty('token');
       });
   });
 
-  test('[/api/auth/login] Failure logging user (wrong password)', async () => {
+  test('[/api/auth/login] Success logging user with username', async () => {
     await server
       .post('/api/auth/login')
-      .send(loginUserWrongPass)
+      .send(loginWithUsername)
+      .then(response => {
+        expect(response.status).toEqual(200);
+        expect(response.body).toHaveProperty('token');
+      });
+  });
+
+  test('[/api/auth/login] Failure logging user with email (wrong password)', async () => {
+    await server
+      .post('/api/auth/login')
+      .send(loginWithWrongPass)
       .then(response => {
         expect(response.status).toEqual(400);
         expect(response.body.token).toBeUndefined();
+      });
+  });
+
+  test('[/api/auth/login] Failure logging user (wrong username)', async () => {
+    await server
+      .post('/api/auth/login')
+      .send(loginWithWrongUsername)
+      .then(response => {
+        expect(response.status).toEqual(404);
+        expect(response.body.token).toBeUndefined();
+      });
+  });
+
+  test('[/api/auth/login] Failure logging user (wrong email)', async () => {
+    await server
+      .post('/api/auth/login')
+      .send(loginWithWrongEmail)
+      .then(response => {
+        expect(response.status).toEqual(404);
+        expect(response.body.token).toBeUndefined();
+      });
+  });
+
+  test('[/api/auth/login] Failure logging user (missing data)', async () => {
+    await server
+      .post('/api/auth/login')
+      .then(response => {
+        expect(response.status).toEqual(400);
+        expect(response.body.message).toBe('Please, provide an email or username');
       });
   });
 });

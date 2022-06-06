@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
-import app from '../src/server/index';
+import app from '../../src/server/index';
 
 // Server for tests
 const server = request(app);

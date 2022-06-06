@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
 import { TodoController } from '../controllers/todo.controllers';
-import verifyAdmin from '../middlewares/verifyAdmin.middleware';
 import verifyToken from '../middlewares/verifyToken.middleware';
 import { TodosResponse } from '../utils/ResponsesTypes';
 
@@ -10,7 +9,7 @@ todoRouter.use(express.json());
 
 todoRouter
   // To Get ToDos or one by ID
-  .get('/', verifyAdmin, verifyToken, async (req: Request, res: Response) => {
+  .get('/', verifyToken, async (req: Request, res: Response) => {
     // Variables for controller
     const todoId: any = req.query?.id;
 

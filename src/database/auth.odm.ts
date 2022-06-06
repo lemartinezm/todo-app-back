@@ -67,7 +67,7 @@ export const loginUserWithUsername = async (user: LoginUserSchema): Promise<Logi
           );
         } else {
           response.status = 404;
-          throw new Error('Login failed');
+          throw new Error('Username not found');
         }
       });
   } catch (error) {
@@ -109,7 +109,7 @@ export const loginUserWithEmail = async (user: LoginUserSchema): Promise<LoginRe
           );
         } else {
           response.status = 404;
-          throw new Error('Login failed');
+          throw new Error('Email not found');
         }
       });
   } catch (error) {
