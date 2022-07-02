@@ -28,6 +28,9 @@ export class TodoController implements ITodoController {
       {
         _id: '6294dd86ecca76f24a89503d',
         name: 'This is a ToDo example',
+        description: 'This is a description example',
+        createdAt: new Date(),
+        deadline: new Date(2022, 12, 1),
         priority: 'NORMAL',
         completed: false,
         creator: '{creatorId}',
@@ -36,6 +39,9 @@ export class TodoController implements ITodoController {
       {
         _id: '6294ddfed8d225386a4f956c',
         name: 'Second ToDo example',
+        description: 'This is a description example',
+        createdAt: new Date(),
+        deadline: new Date(2022, 12, 1),
         priority: 'HIGH',
         completed: false,
         creator: '{creatorId}',
@@ -66,6 +72,8 @@ export class TodoController implements ITodoController {
   /**
    * Endpoint to create a ToDo
    * @param {string} name ToDo name
+   * @param {string} description ToDo description
+   * @param {Date} deadline ToDo deadline
    * @param {string} priority ToDo priority
    * @param {string} loggedUserId Logged User ID
    * @param {string} teamId Team ID to add todo
@@ -80,6 +88,8 @@ export class TodoController implements ITodoController {
   })
   async createNewTodo (
     @BodyProp('name') name: string | undefined,
+    @BodyProp('description') description: string | undefined,
+    @BodyProp('deadline') deadline: Date | undefined,
     @BodyProp('priority') priority: string | undefined,
     @Inject() loggedUserId: string,
     @BodyProp('teamId') teamId?: string
@@ -88,7 +98,10 @@ export class TodoController implements ITodoController {
     if (name && priority) {
       response = await createTodo({
         name,
+        description,
+        deadline,
         priority,
+        createdAt: new Date(),
         completed: false,
         creator: loggedUserId
       }, teamId);
@@ -107,6 +120,8 @@ export class TodoController implements ITodoController {
    * Endpoint to update ToDo by ID
    * @param {string} id ToDo ID to update
    * @param {string} name New name to update ToDo
+   * @param {string} description New description to update ToDo
+   * @param {Date} deadline New deadline to update ToDo
    * @param {string} priority New priority to update ToDo
    * @param {boolean} completed New completed to update ToDo
    * @returns {TodosResponse} Object with status code and confirmation or error message.
@@ -121,6 +136,8 @@ export class TodoController implements ITodoController {
   async updateTodoById (
     @Query() id: string,
     @BodyProp('name') name?: string,
+    @BodyProp('description') description?: string,
+    @BodyProp('deadline') deadline?: Date,
     @BodyProp('priority') priority?: string,
     @BodyProp('completed') completed?: boolean
   ): Promise<TodosResponse> {
@@ -129,6 +146,8 @@ export class TodoController implements ITodoController {
     if (id) {
       const todoUpdated: UpdateTodoSchema = {};
       if (name) todoUpdated.name = name;
+      if (description) todoUpdated.description = description;
+      if (deadline) todoUpdated.deadline = deadline;
       if (priority) todoUpdated.priority = priority;
       if (completed !== undefined) todoUpdated.completed = completed;
       response = await updateTodo(id, todoUpdated);

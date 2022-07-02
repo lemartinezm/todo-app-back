@@ -7,6 +7,8 @@ export interface ITodoController {
 
   createNewTodo(
     name: string | undefined,
+    description: string | undefined,
+    deadline: Date | undefined,
     priority: string | undefined,
     loggedUserId: string,
     teamId?: string
@@ -15,6 +17,8 @@ export interface ITodoController {
   updateTodoById(
     id: string | undefined,
     name?: string,
+    description?: string,
+    deadline?: Date,
     priority?: string,
     completed?: boolean
   ): Promise<TodosResponse>;

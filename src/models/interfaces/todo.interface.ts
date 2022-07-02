@@ -3,6 +3,9 @@
  */
 export interface CreateTodoSchema {
   name: string,
+  description?: string,
+  createdAt: Date,
+  deadline?: Date,
   priority: string,
   completed: boolean,
   creator: string
@@ -14,14 +17,19 @@ export interface CreateTodoSchema {
 export interface TodoSchema {
   _id: string,
   name: string,
+  description?: string,
+  createdAt: Date,
+  deadline?: Date,
   priority: string,
   completed: boolean,
-  creator: string,
+  creator: string
   __v: number
 }
 
 export interface UpdateTodoSchema {
   name?: string,
+  description?: string,
+  deadline?: Date,
   priority?: string,
   completed?: boolean
 }

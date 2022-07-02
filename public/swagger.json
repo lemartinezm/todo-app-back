@@ -80,6 +80,17 @@
 					"name": {
 						"type": "string"
 					},
+					"description": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"deadline": {
+						"type": "string",
+						"format": "date-time"
+					},
 					"priority": {
 						"type": "string"
 					},
@@ -97,6 +108,7 @@
 				"required": [
 					"_id",
 					"name",
+					"createdAt",
 					"priority",
 					"completed",
 					"creator",
@@ -490,6 +502,9 @@
 												{
 													"_id": "6294dd86ecca76f24a89503d",
 													"name": "This is a ToDo example",
+													"description": "This is a description example",
+													"createdAt": "2022-07-02T02:14:32.446Z",
+													"deadline": "2022-12-01T05:00:00.000Z",
 													"priority": "NORMAL",
 													"completed": false,
 													"creator": "{creatorId}",
@@ -498,6 +513,9 @@
 												{
 													"_id": "6294ddfed8d225386a4f956c",
 													"name": "Second ToDo example",
+													"description": "This is a description example",
+													"createdAt": "2022-07-02T02:14:32.446Z",
+													"deadline": "2022-12-01T05:00:00.000Z",
 													"priority": "HIGH",
 													"completed": false,
 													"creator": "{creatorId}",
@@ -602,6 +620,15 @@
 										"type": "string",
 										"description": "ToDo name"
 									},
+									"description": {
+										"type": "string",
+										"description": "ToDo description"
+									},
+									"deadline": {
+										"type": "string",
+										"format": "date-time",
+										"description": "ToDo deadline"
+									},
 									"priority": {
 										"type": "string",
 										"description": "ToDo priority"
@@ -682,6 +709,15 @@
 									"name": {
 										"type": "string",
 										"description": "New name to update ToDo"
+									},
+									"description": {
+										"type": "string",
+										"description": "New description to update ToDo"
+									},
+									"deadline": {
+										"type": "string",
+										"format": "date-time",
+										"description": "New deadline to update ToDo"
 									},
 									"priority": {
 										"type": "string",

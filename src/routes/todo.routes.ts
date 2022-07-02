@@ -32,12 +32,14 @@ todoRouter
   .post('/', verifyToken, async (req: Request, res: Response) => {
     // Variables for controller
     const name: string | undefined = req.body?.name;
+    const description: string | undefined = req.body?.description;
+    const deadline: Date | undefined = req.body?.deadline;
     const priority: string | undefined = req.body?.priority;
     const teamId: string | undefined = req.body?.teamId;
     const userId: string = res.locals.userId;
 
     const controller: TodoController = new TodoController();
-    const response: TodosResponse = await controller.createNewTodo(name, priority, userId, teamId);
+    const response: TodosResponse = await controller.createNewTodo(name, description, deadline, priority, userId, teamId);
     return res.status(response.status).send(response);
   })
 
@@ -47,11 +49,13 @@ todoRouter
     // Variables for controller
     const todoId: any = req.query?.id;
     const name: string | undefined = req.body?.name;
+    const description: string | undefined = req.body?.description;
+    const deadline: Date | undefined = req.body?.deadline;
     const priority: string | undefined = req.body?.priority;
     const completed: boolean | undefined = req.body?.completed;
 
     const controller: TodoController = new TodoController();
-    const response: TodosResponse = await controller.updateTodoById(todoId, name, priority, completed);
+    const response: TodosResponse = await controller.updateTodoById(todoId, name, description, deadline, priority, completed);
     return res.status(response.status).send(response);
   })
 
