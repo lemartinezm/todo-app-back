@@ -1,4 +1,4 @@
-import { Get, Query, Route, SuccessResponse, Tags, Response, Example, BodyProp, Put, Delete } from 'tsoa';
+import { Get, Query, Route, SuccessResponse, Tags, Response, Example, BodyProp, Put, Delete, Inject } from 'tsoa';
 import { deleteUserById, getAllUsers, getUserById, updateUserById } from '../database/user.odm';
 import { LogError } from '../utils/Logger';
 import { UsersResponse } from '../utils/ResponsesTypes';
@@ -27,7 +27,6 @@ export class UserController implements IUserController {
         _id: '',
         username: '',
         email: '',
-        password: '',
         todos: [],
         __v: 0
       },
@@ -35,7 +34,6 @@ export class UserController implements IUserController {
         _id: '',
         username: '',
         email: '',
-        password: '',
         todos: [],
         __v: 0
       }
@@ -115,6 +113,31 @@ export class UserController implements IUserController {
       LogError(`[api/todo] ${response.message}`);
     }
 
+    return response;
+  }
+
+  /**
+   * Endpoint to get logged user info
+   * @param {string} id User ID to obtain
+   * @returns {UsersResponse} Object with response status and users array or error message
+   */
+  @Get('/me')
+  @SuccessResponse(200, 'User obtained successfully')
+  @Response<UsersResponse>(404, 'User not found', errorExample)
+  @Example<UsersResponse>({
+    status: 200,
+    users: [
+      {
+        _id: '',
+        username: '',
+        email: '',
+        todos: [],
+        __v: 0
+      }
+    ]
+  })
+  async getMe (@Inject() id: string): Promise<UsersResponse> {
+    const response: UsersResponse = await getUserById(id);
     return response;
   }
 };

@@ -39,7 +39,7 @@ export const getUserById = async (id: string): Promise<UsersResponse> => {
 
   try {
     const userModel = userEntity();
-    await userModel.findById(id)
+    await userModel.findById(id, { _id: 1, username: 1, email: 1, todos: 1, __v: 1 })
       .then(user => {
         if (user) {
           response.status = 200;

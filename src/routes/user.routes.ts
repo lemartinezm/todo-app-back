@@ -19,6 +19,17 @@ userRouter
     return res.status(response.status).send(response);
   })
 
+  // * To get my info (logged user)
+  .get('/me', verifyToken, async (req: Request, res: Response) => {
+    // Obtain variables
+    const id: any = res.locals.userId;
+
+    const controller: UserController = new UserController();
+    const response = await controller.getMe(id);
+
+    return res.status(response.status).send(response);
+  })
+
   // * To update User
   .put('/', verifyAdmin, verifyToken, async (req: Request, res: Response) => {
     // Variables

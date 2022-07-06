@@ -139,7 +139,8 @@
 				"type": "object",
 				"description": "Response for petitions sent to ToDos endpoints"
 			},
-			"UserSchema": {
+			"GetUserSchema": {
+				"description": "Interface used for get requests",
 				"properties": {
 					"_id": {
 						"type": "string"
@@ -148,9 +149,6 @@
 						"type": "string"
 					},
 					"email": {
-						"type": "string"
-					},
-					"password": {
 						"type": "string"
 					},
 					"todos": {
@@ -168,7 +166,6 @@
 					"_id",
 					"username",
 					"email",
-					"password",
 					"todos",
 					"__v"
 				],
@@ -182,7 +179,7 @@
 					},
 					"users": {
 						"items": {
-							"$ref": "#/components/schemas/UserSchema"
+							"$ref": "#/components/schemas/GetUserSchema"
 						},
 						"type": "array"
 					},
@@ -503,7 +500,7 @@
 													"_id": "6294dd86ecca76f24a89503d",
 													"name": "This is a ToDo example",
 													"description": "This is a description example",
-													"createdAt": "2022-07-02T02:14:32.446Z",
+													"createdAt": "2022-07-06T02:31:07.375Z",
 													"deadline": "2022-12-01T05:00:00.000Z",
 													"priority": "NORMAL",
 													"completed": false,
@@ -514,7 +511,7 @@
 													"_id": "6294ddfed8d225386a4f956c",
 													"name": "Second ToDo example",
 													"description": "This is a description example",
-													"createdAt": "2022-07-02T02:14:32.446Z",
+													"createdAt": "2022-07-06T02:31:07.376Z",
 													"deadline": "2022-12-01T05:00:00.000Z",
 													"priority": "HIGH",
 													"completed": false,
@@ -835,7 +832,6 @@
 													"_id": "",
 													"username": "",
 													"email": "",
-													"password": "",
 													"todos": [],
 													"__v": 0
 												},
@@ -843,7 +839,6 @@
 													"_id": "",
 													"username": "",
 													"email": "",
-													"password": "",
 													"todos": [],
 													"__v": 0
 												}
@@ -1063,6 +1058,63 @@
 						}
 					}
 				]
+			}
+		},
+		"/api/users/me": {
+			"get": {
+				"operationId": "GetMe",
+				"responses": {
+					"200": {
+						"description": "User obtained successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"users": [
+												{
+													"_id": "",
+													"username": "",
+													"email": "",
+													"todos": [],
+													"__v": 0
+												}
+											]
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "User not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UsersResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Something went wrong"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to get logged user info",
+				"tags": [
+					"UserController"
+				],
+				"security": [],
+				"parameters": []
 			}
 		}
 	},

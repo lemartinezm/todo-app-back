@@ -1,5 +1,5 @@
 import { TodoSchema } from '../models/interfaces/todo.interface';
-import { UserSchema } from '../models/interfaces/user.interface';
+import { GetUserSchema } from '../models/interfaces/user.interface';
 
 /**
  * Basic Response containing response status and confirmation or error message
@@ -15,7 +15,11 @@ export type BasicResponse = {
 export type TodosResponse = {
   status: number,
   todos?: TodoSchema[],
-  message?: string
+  message?: string,
+  meta?: {
+    allPages: number,
+    currentPage: number
+  }
 }
 
 /**
@@ -23,7 +27,7 @@ export type TodosResponse = {
  */
 export type UsersResponse = {
   status: number,
-  users?: UserSchema[],
+  users?: GetUserSchema[],
   message?: string
 };
 

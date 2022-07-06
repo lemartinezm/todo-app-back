@@ -19,3 +19,14 @@ export interface UpdateUserSchema {
   email?: string,
   password?: string
 };
+
+/**
+ * Interface used for get requests
+ */
+export interface GetUserSchema {
+  _id: string,
+  username: string,
+  email: string,
+  todos: string[],
+  __v: number
+};
