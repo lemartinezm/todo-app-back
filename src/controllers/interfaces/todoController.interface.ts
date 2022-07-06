@@ -3,7 +3,7 @@ import { TodosResponse } from '../../utils/ResponsesTypes';
 export interface ITodoController {
   getTodos(id?: string): Promise<TodosResponse>;
 
-  getMyTodos(id: string): Promise<TodosResponse>;
+  getMyTodos(userId: string, documentsPerPage: number, currentPage: number): Promise<TodosResponse>;
 
   createNewTodo(
     name: string | undefined,

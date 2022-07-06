@@ -119,6 +119,23 @@
 			},
 			"TodosResponse": {
 				"properties": {
+					"meta": {
+						"properties": {
+							"currentPage": {
+								"type": "number",
+								"format": "double"
+							},
+							"allPages": {
+								"type": "number",
+								"format": "double"
+							}
+						},
+						"required": [
+							"currentPage",
+							"allPages"
+						],
+						"type": "object"
+					},
 					"message": {
 						"type": "string"
 					},
@@ -500,7 +517,7 @@
 													"_id": "6294dd86ecca76f24a89503d",
 													"name": "This is a ToDo example",
 													"description": "This is a description example",
-													"createdAt": "2022-07-06T02:31:07.375Z",
+													"createdAt": "2022-07-06T03:00:15.692Z",
 													"deadline": "2022-12-01T05:00:00.000Z",
 													"priority": "NORMAL",
 													"completed": false,
@@ -511,7 +528,7 @@
 													"_id": "6294ddfed8d225386a4f956c",
 													"name": "Second ToDo example",
 													"description": "This is a description example",
-													"createdAt": "2022-07-06T02:31:07.376Z",
+													"createdAt": "2022-07-06T03:00:15.692Z",
 													"deadline": "2022-12-01T05:00:00.000Z",
 													"priority": "HIGH",
 													"completed": false,

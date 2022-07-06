@@ -62,11 +62,15 @@ export class TodoController implements ITodoController {
   /**
    * Endpoint to Todos of User
    * @param {string} userId User's ID
+   * @param {number} documentsPerPage Number of documents to get
+   * @param {number} currentPage Current page in pagination
    * @returns {TodosResponse} Object with status code and confirmation or error message.
    */
   @Get('/me')
-  async getMyTodos (@Inject() userId: string): Promise<TodosResponse> {
-    return await getTodosByCreatorId(userId);
+  async getMyTodos (@Inject() userId: string,
+    @Query('documentsPerPage') documentsPerPage: number,
+    @Query('currentPage') currentPage: number): Promise<TodosResponse> {
+    return await getTodosByCreatorId(userId, documentsPerPage, currentPage);
   }
 
   /**

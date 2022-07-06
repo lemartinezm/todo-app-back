@@ -16,9 +16,14 @@ export type TodosResponse = {
   status: number,
   todos?: TodoSchema[],
   message?: string,
+  /**
+   * Pagination info
+   */
   meta?: {
-    allPages: number,
-    currentPage: number
+    totalPages: number,
+    currentPage: number,
+    documentsPerPage: number,
+    totalDocuments: number
   }
 }
 

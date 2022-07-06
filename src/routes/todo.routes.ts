@@ -22,9 +22,13 @@ todoRouter
   .get('/me', verifyToken, async (req: Request, res: Response) => {
     // Variables
     const userId: string = res.locals.userId;
+    const documentsPerPage: any = req.query?.documentsPerPage;
+    const currentPage: any = req.query?.currentPage;
 
     const controller: TodoController = new TodoController();
-    const response: TodosResponse = await controller.getMyTodos(userId);
+    const response: TodosResponse = await controller.getMyTodos(userId,
+      parseInt(documentsPerPage) || 10,
+      parseInt(currentPage) || 1);
     return res.status(response.status).send(response);
   })
 

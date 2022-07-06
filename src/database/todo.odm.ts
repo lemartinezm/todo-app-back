@@ -64,13 +64,15 @@ export const getTodoById = async (id: string): Promise<TodosResponse> => {
  * @param {string} userId User'd ID to obtain ToDos
  * @returns {TodosResponse} Object with response status and ToDos or error message.
  */
-export const getTodosByCreatorId = async (userId: string): Promise<TodosResponse> => {
+export const getTodosByCreatorId = async (userId: string, documentsPerPage: number, currentPage: number): Promise<TodosResponse> => {
   const response: TodosResponse = {
     status: 400
   };
   try {
     const todoModel = todoEntity();
-    await todoModel.find({ creator: userId })
+    // For pagination
+    const totalDocuments = await todoModel.find({ creator: userId }).countDocuments();
+    await todoModel.find({ creator: userId }).skip(documentsPerPage * (currentPage - 1)).limit(documentsPerPage)
       .then(todos => {
         if (todos) {
           response.status = 200;
@@ -80,6 +82,13 @@ export const getTodosByCreatorId = async (userId: string): Promise<TodosResponse
           throw new Error('Something went wrong');
         }
       });
+
+    response.meta = {
+      totalPages: Math.ceil(totalDocuments / documentsPerPage),
+      currentPage,
+      documentsPerPage,
+      totalDocuments
+    };
   } catch (error) {
     response.message = `${error}`;
     LogError(`[ODM ERROR] Something went wrong. Details ${error}`);
