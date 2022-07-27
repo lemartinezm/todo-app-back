@@ -1,6 +1,7 @@
 import { CreateTeamSchema, TeamSchema } from '../models/interfaces/team.interface';
 import { teamEntity } from '../models/schemas/team';
 import { todoEntity } from '../models/schemas/todo';
+import { userEntity } from '../models/schemas/user';
 import { updateTeamOperations } from '../utils/Enums';
 import { LogError } from '../utils/Logger';
 import { BasicResponse, TeamResponse } from '../utils/ResponsesTypes';
@@ -22,13 +23,14 @@ export const getTeamsByParticipantId = async (loggedUserId: string): Promise<Tea
         if (teams.length > 0) {
           response.status = 200;
           const todoModel = todoEntity();
+          const userModel = userEntity();
           response.teams = await Promise.all(
             teams.map(async (team: TeamSchema) => {
               return {
                 _id: team._id,
                 name: team.name,
-                leaderId: team.leaderId,
-                participants: team.participants,
+                leader: await userModel.findById(team.leader, { _id: 1, username: 1, email: 1 }),
+                participants: await userModel.find({ _id: { $in: team.participants } }, { _id: 1, username: 1, email: 1 }),
                 todos: await todoModel.find({ _id: { $in: team.todos } }),
                 __v: team.__v
               };

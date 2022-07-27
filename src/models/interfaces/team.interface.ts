@@ -1,7 +1,7 @@
 export interface TeamSchema {
   _id: string,
   name: string,
-  leaderId: string,
+  leader: string,
   participants: any[],
   todos: any[],
   __v: number
