@@ -1,5 +1,6 @@
-import { CreateTeamSchema } from '../models/interfaces/team.interface';
+import { CreateTeamSchema, TeamSchema } from '../models/interfaces/team.interface';
 import { teamEntity } from '../models/schemas/team';
+import { todoEntity } from '../models/schemas/todo';
 import { updateTeamOperations } from '../utils/Enums';
 import { LogError } from '../utils/Logger';
 import { BasicResponse, TeamResponse } from '../utils/ResponsesTypes';
@@ -17,13 +18,45 @@ export const getTeamsByParticipantId = async (loggedUserId: string): Promise<Tea
   try {
     const teamModel = teamEntity();
     await teamModel.find({ participants: loggedUserId })
-      .then(teams => {
+      .then(async (teams: TeamSchema[]) => {
         if (teams.length > 0) {
           response.status = 200;
-          response.teams = teams;
+          const todoModel = todoEntity();
+          response.teams = await Promise.all(
+            teams.map(async (team: TeamSchema) => {
+              return {
+                _id: team._id,
+                name: team.name,
+                leaderId: team.leaderId,
+                participants: team.participants,
+                todos: await todoModel.find({ _id: { $in: team.todos } }),
+                __v: team.__v
+              };
+            })
+          );
         } else {
           throw new Error('You don\'t participate in any team');
         }
+      });
+  } catch (error) {
+    response.message = `${error}`;
+    LogError(`[ODM ERROR] ${error}`);
+  }
+
+  return response;
+};
+
+export const getTeamById = async (teamId: string) => {
+  const response: TeamResponse = {
+    status: 400
+  };
+
+  try {
+    const teamModel = teamEntity();
+    await teamModel.findById(teamId)
+      .then((team: TeamSchema) => {
+        response.teams = [team];
+        response.status = 200;
       });
   } catch (error) {
     response.message = `${error}`;

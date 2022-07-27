@@ -121,20 +121,31 @@
 				"properties": {
 					"meta": {
 						"properties": {
+							"totalDocuments": {
+								"type": "number",
+								"format": "double"
+							},
+							"documentsPerPage": {
+								"type": "number",
+								"format": "double"
+							},
 							"currentPage": {
 								"type": "number",
 								"format": "double"
 							},
-							"allPages": {
+							"totalPages": {
 								"type": "number",
 								"format": "double"
 							}
 						},
 						"required": [
+							"totalDocuments",
+							"documentsPerPage",
 							"currentPage",
-							"allPages"
+							"totalPages"
 						],
-						"type": "object"
+						"type": "object",
+						"description": "Pagination info"
 					},
 					"message": {
 						"type": "string"
@@ -517,7 +528,7 @@
 													"_id": "6294dd86ecca76f24a89503d",
 													"name": "This is a ToDo example",
 													"description": "This is a description example",
-													"createdAt": "2022-07-06T03:00:15.692Z",
+													"createdAt": "2022-07-27T13:58:02.259Z",
 													"deadline": "2022-12-01T05:00:00.000Z",
 													"priority": "NORMAL",
 													"completed": false,
@@ -528,7 +539,7 @@
 													"_id": "6294ddfed8d225386a4f956c",
 													"name": "Second ToDo example",
 													"description": "This is a description example",
-													"createdAt": "2022-07-06T03:00:15.692Z",
+													"createdAt": "2022-07-27T13:58:02.260Z",
 													"deadline": "2022-12-01T05:00:00.000Z",
 													"priority": "HIGH",
 													"completed": false,
@@ -826,7 +837,28 @@
 					"TodoController"
 				],
 				"security": [],
-				"parameters": []
+				"parameters": [
+					{
+						"description": "Number of documents to get",
+						"in": "query",
+						"name": "documentsPerPage",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Current page in pagination",
+						"in": "query",
+						"name": "currentPage",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
 		"/api/users": {
