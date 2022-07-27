@@ -20,8 +20,8 @@ export const getTeamsByParticipantId = async (loggedUserId: string): Promise<Tea
     const teamModel = teamEntity();
     await teamModel.find({ participants: loggedUserId })
       .then(async (teams: TeamSchema[]) => {
+        response.status = 200;
         if (teams.length > 0) {
-          response.status = 200;
           const todoModel = todoEntity();
           const userModel = userEntity();
           response.teams = await Promise.all(
@@ -37,7 +37,7 @@ export const getTeamsByParticipantId = async (loggedUserId: string): Promise<Tea
             })
           );
         } else {
-          throw new Error('You don\'t participate in any team');
+          response.message = 'You don\'t participate in any team';
         }
       });
   } catch (error) {
