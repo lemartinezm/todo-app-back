@@ -48,26 +48,6 @@ export const getTeamsByParticipantId = async (loggedUserId: string): Promise<Tea
   return response;
 };
 
-export const getTeamById = async (teamId: string) => {
-  const response: TeamResponse = {
-    status: 400
-  };
-
-  try {
-    const teamModel = teamEntity();
-    await teamModel.findById(teamId)
-      .then((team: TeamSchema) => {
-        response.teams = [team];
-        response.status = 200;
-      });
-  } catch (error) {
-    response.message = `${error}`;
-    LogError(`[ODM ERROR] ${error}`);
-  }
-
-  return response;
-};
-
 /**
  * Method to create a Team
  * @param {CreateTeamSchema} team Team to create

@@ -46,7 +46,7 @@ export type LoginResponse = {
 };
 
 /**
- * Team Response
+ * Response for petitions sent to Teams endpoints
  */
 export type TeamResponse = {
   status: number,

@@ -61,7 +61,7 @@
 					"status"
 				],
 				"type": "object",
-				"description": "Team Response"
+				"description": "Response for petitions sent to Teams endpoints"
 			},
 			"updateTeamOperations": {
 				"enum": [
@@ -398,11 +398,120 @@
 				"operationId": "GetTeamsByParticipant",
 				"responses": {
 					"200": {
-						"description": "Object with response status and teams or error message",
+						"description": "Teams obtained successfully",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/TeamResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"teams": [
+												{
+													"_id": "62991758c2c45fea46143d93",
+													"name": "Las estrellitas",
+													"leader": {
+														"_id": "6297fa2fb070244515773b8c",
+														"username": "martin",
+														"email": "martin@email.com"
+													},
+													"participants": [
+														{
+															"_id": "6297fa2fb070244515773b8c",
+															"username": "martin",
+															"email": "martin@email.com"
+														}
+													],
+													"todos": [
+														{
+															"_id": "62bfafb598899f7e90e68b9b",
+															"name": "This is my new ToDo",
+															"description": "This is a description example",
+															"createdAt": "2022-07-02T02:38:45.826Z",
+															"deadline": "2022-07-03T00:00:00.000Z",
+															"priority": "low",
+															"completed": false,
+															"creator": "6297fa2fb070244515773b8c",
+															"__v": 0
+														},
+														{
+															"_id": "62c4fdc912d4b095433ee5fa",
+															"name": "This is my new ToDo",
+															"description": "This is a description example",
+															"createdAt": "2022-07-06T03:13:13.171Z",
+															"deadline": "2022-07-05T00:00:00.000Z",
+															"priority": "low",
+															"completed": false,
+															"creator": "6297fa2fb070244515773b8c",
+															"__v": 0
+														}
+													],
+													"__v": 0
+												},
+												{
+													"_id": "6299175cc2c45fea46143d95",
+													"name": "Las burbujitas",
+													"leader": {
+														"_id": "6297fa2fb070244515773b8c",
+														"username": "jorge",
+														"email": "jorge@email.com"
+													},
+													"participants": [
+														{
+															"_id": "6297fa2fb070244515773b8c",
+															"username": "jorge",
+															"email": "jorge@email.com"
+														}
+													],
+													"todos": [
+														{
+															"_id": "62dc92c893615bf7dcd7bc33",
+															"name": "Fourth Kata",
+															"description": "",
+															"createdAt": "2022-07-24T00:31:04.081Z",
+															"deadline": "2022-07-24T00:23:25.042Z",
+															"priority": "normal",
+															"completed": false,
+															"creator": "6297fa51b070244515773b8e",
+															"__v": 0
+														},
+														{
+															"_id": "62dc930493615bf7dcd7bc4d",
+															"name": "My new todo",
+															"description": "",
+															"createdAt": "2022-07-24T00:32:04.408Z",
+															"deadline": "2022-07-24T00:23:25.042Z",
+															"priority": "normal",
+															"completed": false,
+															"creator": "6297fa51b070244515773b8e",
+															"__v": 0
+														}
+													],
+													"__v": 0
+												}
+											]
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TeamResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Error: Something went wrong"
+										}
+									}
 								}
 							}
 						}
@@ -420,12 +529,38 @@
 			"post": {
 				"operationId": "CreateNewTeam",
 				"responses": {
-					"200": {
-						"description": "Object with response status and confirmation or error message",
+					"201": {
+						"description": "",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/BasicResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 201,
+											"message": "Team created successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TeamResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Error: Something went wrong"
+										}
+									}
 								}
 							}
 						}
@@ -442,11 +577,37 @@
 				"operationId": "UpdateTeam",
 				"responses": {
 					"200": {
-						"description": "Object with response status and confirmation or error message",
+						"description": "",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/BasicResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"message": "Participant added successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TeamResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Error: Something went wrong"
+										}
+									}
 								}
 							}
 						}
@@ -490,11 +651,37 @@
 				"operationId": "DeleteTeam",
 				"responses": {
 					"200": {
-						"description": "Object with response status and confirmation or error message",
+						"description": "",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/BasicResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 200,
+											"message": "Team with ID {teamId} deleted successfully"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Something went wrong",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TeamResponse"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"status": 400,
+											"message": "Error: Something went wrong"
+										}
+									}
 								}
 							}
 						}
@@ -528,7 +715,7 @@
 													"_id": "6294dd86ecca76f24a89503d",
 													"name": "This is a ToDo example",
 													"description": "This is a description example",
-													"createdAt": "2022-07-27T16:15:19.780Z",
+													"createdAt": "2022-07-27T16:49:42.697Z",
 													"deadline": "2022-12-01T05:00:00.000Z",
 													"priority": "NORMAL",
 													"completed": false,
@@ -539,7 +726,7 @@
 													"_id": "6294ddfed8d225386a4f956c",
 													"name": "Second ToDo example",
 													"description": "This is a description example",
-													"createdAt": "2022-07-27T16:15:19.781Z",
+													"createdAt": "2022-07-27T16:49:42.697Z",
 													"deadline": "2022-12-01T05:00:00.000Z",
 													"priority": "HIGH",
 													"completed": false,
