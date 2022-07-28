@@ -122,12 +122,30 @@ export const updateTeamById = async (loggedUserId: string,
         });
         break;
 
+      case updateTeamOperations.DELETE_MEMBER:
+        await teamModel.findByIdAndUpdate(teamId, {
+          $pull: { participants: data }
+        }).then(() => {
+          response.status = 200;
+          response.message = 'Participant deleted successfully';
+        });
+        break;
+
       case updateTeamOperations.ADD_TODO:
         await teamModel.findByIdAndUpdate(teamId, {
           $push: { todos: data }
         }).then(() => {
           response.status = 200;
           response.message = 'ToDo added successfully';
+        });
+        break;
+
+      case updateTeamOperations.DELETE_TODO:
+        await teamModel.findByIdAndUpdate(teamId, {
+          $pull: { todos: data }
+        }).then(() => {
+          response.status = 200;
+          response.message = 'Todo deleted successfully';
         });
         break;
 

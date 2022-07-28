@@ -66,7 +66,9 @@
 			"updateTeamOperations": {
 				"enum": [
 					"ADD_MEMBER",
+					"DELETE_MEMBER",
 					"ADD_TODO",
+					"DELETE_TODO",
 					"CHANGE_LEADER"
 				],
 				"type": "string"
@@ -741,7 +743,7 @@
 													"_id": "6294dd86ecca76f24a89503d",
 													"name": "This is a ToDo example",
 													"description": "This is a description example",
-													"createdAt": "2022-07-28T21:49:37.204Z",
+													"createdAt": "2022-07-28T22:20:55.189Z",
 													"deadline": "2022-12-01T05:00:00.000Z",
 													"priority": "NORMAL",
 													"completed": false,
@@ -752,7 +754,7 @@
 													"_id": "6294ddfed8d225386a4f956c",
 													"name": "Second ToDo example",
 													"description": "This is a description example",
-													"createdAt": "2022-07-28T21:49:37.204Z",
+													"createdAt": "2022-07-28T22:20:55.189Z",
 													"deadline": "2022-12-01T05:00:00.000Z",
 													"priority": "HIGH",
 													"completed": false,
