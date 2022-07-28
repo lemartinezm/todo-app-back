@@ -20,9 +20,10 @@ teamRouter
   .post('/', verifyToken, async (req: Request, res: Response) => {
     const leaderId: any = res.locals.userId;
     const teamName: any = req.body?.teamName;
+    const participants: any = req.body?.participants;
 
     const controller: TeamController = new TeamController();
-    const response = await controller.createNewTeam(leaderId, teamName);
+    const response = await controller.createNewTeam(leaderId, teamName, participants);
     return res.status(response.status).send(response);
   })
 

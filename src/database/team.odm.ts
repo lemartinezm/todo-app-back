@@ -61,10 +61,15 @@ export const createTeam = async (team: CreateTeamSchema): Promise<BasicResponse>
 
   try {
     const teamModel = teamEntity();
-    await teamModel.create(team)
-      .then(teamCreated => {
-        response.status = 201;
-        response.message = 'Team created successfully';
+    const userModel = userEntity();
+    await userModel.find({ username: { $in: team.participants } })
+      .then(async (usersFound) => {
+        team.participants = [team.leader, ...usersFound.map(user => user._id)];
+        await teamModel.create(team)
+          .then(() => {
+            response.status = 201;
+            response.message = 'Team created successfully';
+          });
       });
   } catch (error) {
     response.message = 'Failure creating team';

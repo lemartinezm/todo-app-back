@@ -115,6 +115,7 @@ export class TeamController implements ITeamController {
   /**
    * Endpoint to create New Team
    * @param {string} leaderId User ID of who is creating the team
+   * @param {string[]} participants Usernames of the participants
    * @returns {BasicResponse} Object with response status and confirmation or error message
    */
   @Post('/')
@@ -124,12 +125,14 @@ export class TeamController implements ITeamController {
     status: 201,
     message: 'Team created successfully'
   })
-  async createNewTeam (@Inject() leaderId: string, @BodyProp('name') name: string): Promise<BasicResponse> {
+  async createNewTeam (@Inject() leaderId: string,
+   @BodyProp('name') name: string,
+   @BodyProp('participants') participants: string[]): Promise<BasicResponse> {
     if (name) {
       return await createTeam({
         name,
         leader: leaderId,
-        participants: [leaderId],
+        participants,
         todos: []
       });
     } else {

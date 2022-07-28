@@ -10,6 +10,9 @@ export interface TeamSchema {
 export interface CreateTeamSchema {
   leader: string,
   name: string,
+  /**
+   * Usernames of the participants
+   */
   participants: any[],
   todos: []
 };
