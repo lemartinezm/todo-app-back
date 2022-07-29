@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { AuthController } from '../controllers/auth.controllers';
+import verifyRepeatedData from '../middlewares/verifyRepeatedData.middleware';
 import { BasicResponse, LoginResponse } from '../utils/ResponsesTypes';
 
 const authRouter = express.Router();
@@ -8,7 +9,7 @@ authRouter.use(express.json());
 
 authRouter
   // * To register user
-  .post('/register', async (req: Request, res: Response) => {
+  .post('/register', verifyRepeatedData, async (req: Request, res: Response) => {
     // Variables
     const username: any = req.body?.username;
     const email: any = req.body?.email;
