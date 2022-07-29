@@ -10,7 +10,8 @@ export const todoEntity = () => {
     deadline: { type: Date, required: false },
     priority: { type: String, required: true, enum: [TodoPriority.LOW, TodoPriority.NORMAL, TodoPriority.HIGH] },
     completed: { type: Boolean, required: true },
-    creator: { type: mongoose.SchemaTypes.ObjectId, required: true }
+    creator: { type: mongoose.SchemaTypes.ObjectId, required: true },
+    teamId: { type: mongoose.SchemaTypes.ObjectId, required: false }
   });
 
   return mongoose.models.Todo || mongoose.model<CreateTodoSchema>('Todo', todoSchema);

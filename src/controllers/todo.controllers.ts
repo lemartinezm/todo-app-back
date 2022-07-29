@@ -107,7 +107,8 @@ export class TodoController implements ITodoController {
         priority,
         createdAt: new Date(),
         completed: false,
-        creator: loggedUserId
+        creator: loggedUserId,
+        teamId
       }, teamId);
     } else {
       response = {

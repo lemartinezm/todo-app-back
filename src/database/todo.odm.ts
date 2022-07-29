@@ -4,6 +4,7 @@ import { CreateTodoSchema, UpdateTodoSchema } from '../models/interfaces/todo.in
 import { LogError } from '../utils/Logger';
 import { updateTeamById } from './team.odm';
 import { updateTeamOperations } from '../utils/Enums';
+import { teamEntity } from '../models/schemas/team';
 
 /**
  * Method to Get All ToDos
@@ -71,8 +72,8 @@ export const getTodosByCreatorId = async (userId: string, documentsPerPage: numb
   try {
     const todoModel = todoEntity();
     // For pagination
-    const totalDocuments = await todoModel.find({ creator: userId }).countDocuments();
-    await todoModel.find({ creator: userId }).skip(documentsPerPage * (currentPage - 1)).limit(documentsPerPage)
+    const totalDocuments = await todoModel.find({ creator: userId, teamId: { $exists: false } }).countDocuments();
+    await todoModel.find({ creator: userId, teamId: { $exists: false } }).skip(documentsPerPage * (currentPage - 1)).limit(documentsPerPage)
       .then(todos => {
         if (todos) {
           response.status = 200;
@@ -177,10 +178,16 @@ export const deleteTodo = async (id: string): Promise<TodosResponse> => {
   try {
     const todoModel = todoEntity();
     await todoModel.findByIdAndDelete(id)
-      .then((res) => {
+      .then(async (res) => {
         if (res) {
           response.status = 200;
           response.message = `ToDo with id ${id} deleted successfully`;
+
+          // Delete the todo from the team (if belongs to one)
+          if (res.teamId) {
+            const teamModel = teamEntity();
+            await teamModel.findByIdAndUpdate(res.teamId, { $pull: { todos: res._id } });
+          }
         } else {
           response.status = 404;
           throw new Error(`ToDo with id ${id} not found`);

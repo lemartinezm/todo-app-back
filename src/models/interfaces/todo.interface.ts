@@ -8,7 +8,8 @@ export interface CreateTodoSchema {
   deadline?: Date,
   priority: string,
   completed: boolean,
-  creator: string
+  creator: string,
+  teamId?: string
 }
 
 /**
