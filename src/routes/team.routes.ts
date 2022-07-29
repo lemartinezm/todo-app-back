@@ -10,9 +10,11 @@ teamRouter
   // * To get my teams
   .get('/me', verifyToken, async (req: Request, res: Response) => {
     const loggedUserId: any = res.locals.userId;
+    const documentsPerPage: any = req.query?.documentsPerPage || 10;
+    const currentPage: any = req.query?.currentPage || 1;
 
     const controller: TeamController = new TeamController();
-    const response = await controller.getTeamsByParticipant(loggedUserId);
+    const response = await controller.getTeamsByParticipant(loggedUserId, parseInt(documentsPerPage), parseInt(currentPage));
     return res.status(response.status).send(response);
   })
 

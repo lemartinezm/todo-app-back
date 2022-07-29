@@ -11,7 +11,7 @@ import { BasicResponse, TeamResponse } from '../utils/ResponsesTypes';
  * @param {string} loggedUserId Logged User ID
  * @returns {TeamResponse} Object with response status
  */
-export const getTeamsByParticipantId = async (loggedUserId: string): Promise<TeamResponse> => {
+export const getTeamsByParticipantId = async (loggedUserId: string, documentsPerPage: number, currentPage: number): Promise<TeamResponse> => {
   const response: TeamResponse = {
     status: 400
   };
@@ -26,12 +26,21 @@ export const getTeamsByParticipantId = async (loggedUserId: string): Promise<Tea
           const userModel = userEntity();
           response.teams = await Promise.all(
             teams.map(async (team: TeamSchema) => {
+              const totalDocuments = await todoModel.find({ _id: { $in: team.todos } }).countDocuments();
               return {
                 _id: team._id,
                 name: team.name,
                 leader: await userModel.findById(team.leader, { _id: 1, username: 1, email: 1 }),
                 participants: await userModel.find({ _id: { $in: team.participants } }, { _id: 1, username: 1, email: 1 }),
-                todos: await todoModel.find({ _id: { $in: team.todos } }),
+                todos: await todoModel.find({ _id: { $in: team.todos } })
+                  .skip(documentsPerPage * (currentPage - 1))
+                  .limit(documentsPerPage),
+                meta: {
+                  totalPages: Math.ceil(totalDocuments / documentsPerPage),
+                  currentPage,
+                  documentsPerPage,
+                  totalDocuments
+                },
                 __v: team.__v
               };
             })

@@ -1,4 +1,4 @@
-import { BodyProp, Delete, Example, Get, Inject, Post, Put, Response, Route, SuccessResponse, Tags } from 'tsoa';
+import { BodyProp, Delete, Example, Get, Inject, Post, Put, Query, Response, Route, SuccessResponse, Tags } from 'tsoa';
 import { createTeam, deleteTeamById, getTeamsByParticipantId, updateTeamById } from '../database/team.odm';
 import { updateTeamOperations } from '../utils/Enums';
 import { BasicResponse, TeamResponse } from '../utils/ResponsesTypes';
@@ -63,6 +63,12 @@ export class TeamController implements ITeamController {
             __v: 0
           }
         ],
+        meta: {
+          totalPages: 2,
+          currentPage: 1,
+          documentsPerPage: 10,
+          totalDocuments: 15
+        },
         __v: 0
       },
       {
@@ -104,12 +110,20 @@ export class TeamController implements ITeamController {
             __v: 0
           }
         ],
+        meta: {
+          totalPages: 2,
+          currentPage: 1,
+          documentsPerPage: 10,
+          totalDocuments: 15
+        },
         __v: 0
       }
     ]
   })
-  async getTeamsByParticipant (@Inject() loggedUserId: string): Promise<TeamResponse> {
-    return await getTeamsByParticipantId(loggedUserId);
+  async getTeamsByParticipant (@Inject() loggedUserId: string,
+    @Query() documentsPerPage: number,
+    @Query() currentPage: number): Promise<TeamResponse> {
+    return await getTeamsByParticipantId(loggedUserId, documentsPerPage, currentPage);
   }
 
   /**
@@ -126,8 +140,8 @@ export class TeamController implements ITeamController {
     message: 'Team created successfully'
   })
   async createNewTeam (@Inject() leaderId: string,
-   @BodyProp('name') name: string,
-   @BodyProp('participants') participants: string[]): Promise<BasicResponse> {
+    @BodyProp('name') name: string,
+    @BodyProp('participants') participants: string[]): Promise<BasicResponse> {
     if (name) {
       return await createTeam({
         name,
