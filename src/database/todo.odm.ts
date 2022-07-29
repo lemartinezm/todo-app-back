@@ -2,8 +2,6 @@ import { todoEntity } from '../models/schemas/todo';
 import { TodosResponse } from '../utils/ResponsesTypes';
 import { CreateTodoSchema, UpdateTodoSchema } from '../models/interfaces/todo.interface';
 import { LogError } from '../utils/Logger';
-import { updateTeamById } from './team.odm';
-import { updateTeamOperations } from '../utils/Enums';
 import { teamEntity } from '../models/schemas/team';
 
 /**
@@ -118,12 +116,10 @@ export const createTodo = async (todo: CreateTodoSchema, teamId?: string): Promi
 
         // Add to team if there is teamId
         if (teamId) {
-          await updateTeamById(todo.creator, teamId, updateTeamOperations.ADD_TODO, todoCreated._id.toString())
-            .then((updateResponse) => {
-              if (updateResponse.status !== 200) {
-                throw new Error('Can\'t be added to the team');
-              }
-              response.message = response.message?.concat('. ', `ToDo added to team ${teamId}`);
+          const teamModel = teamEntity();
+          await teamModel.findByIdAndUpdate(teamId, { $push: { todos: todoCreated._id } })
+            .then(() => {
+              response.message = response.message?.concat('. Added to team successfully');
             });
         }
       });
