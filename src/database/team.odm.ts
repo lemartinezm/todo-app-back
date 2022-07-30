@@ -2,7 +2,6 @@ import { CreateTeamSchema, TeamSchema } from '../models/interfaces/team.interfac
 import { teamEntity } from '../models/schemas/team';
 import { todoEntity } from '../models/schemas/todo';
 import { userEntity } from '../models/schemas/user';
-import { updateTeamOperations } from '../utils/Enums';
 import { LogError } from '../utils/Logger';
 import { BasicResponse, TeamResponse } from '../utils/ResponsesTypes';
 
@@ -91,15 +90,11 @@ export const createTeam = async (team: CreateTeamSchema): Promise<BasicResponse>
 /**
  * Method to update a Team by ID
  * @param {string} loggedUserId Logged User ID
- * @param {string} teamId Team ID to update
- * @param {updateTeamOperations} updateOperation Type of update
- * @param {any} data Data to update
+ * @param {string} updatedTeam Updated Team
  * @returns {BasicResponse} Object with response status and confirmation or error message
  */
 export const updateTeamById = async (loggedUserId: string,
-  teamId: string,
-  updateOperation: updateTeamOperations,
-  data?: any): Promise<BasicResponse> => {
+  updatedTeam: any): Promise<BasicResponse> => {
   const response: BasicResponse = {
     status: 400,
     message: 'Something went wrong'
@@ -108,7 +103,7 @@ export const updateTeamById = async (loggedUserId: string,
   try {
     const teamModel = teamEntity();
 
-    await teamModel.findById(teamId)
+    await teamModel.findById(updatedTeam._id)
       .then(teamFound => {
         if (teamFound) {
           if (teamFound.leader.toString() !== loggedUserId) {
@@ -120,53 +115,17 @@ export const updateTeamById = async (loggedUserId: string,
         }
       });
 
-    switch (updateOperation) {
-      // It can be added multiple participants if data is an array of IDs
-      case updateTeamOperations.ADD_MEMBER:
-        await teamModel.findByIdAndUpdate(teamId, {
-          $push: { participants: data }
-        }).then(() => {
-          response.status = 200;
-          response.message = 'Participant added successfully';
-        });
-        break;
+    const userModel = userEntity();
 
-      case updateTeamOperations.DELETE_MEMBER:
-        await teamModel.findByIdAndUpdate(teamId, {
-          $pull: { participants: data }
-        }).then(() => {
-          response.status = 200;
-          response.message = 'Participant deleted successfully';
-        });
-        break;
-
-      case updateTeamOperations.ADD_TODO:
-        await teamModel.findByIdAndUpdate(teamId, {
-          $push: { todos: data }
-        }).then(() => {
-          response.status = 200;
-          response.message = 'ToDo added successfully';
-        });
-        break;
-
-      case updateTeamOperations.DELETE_TODO:
-        await teamModel.findByIdAndUpdate(teamId, {
-          $pull: { todos: data }
-        }).then(() => {
-          response.status = 200;
-          response.message = 'Todo deleted successfully';
-        });
-        break;
-
-      case updateTeamOperations.CHANGE_LEADER:
-        await teamModel.findByIdAndUpdate(teamId, { leader: data }).then(() => {
-          response.status = 200;
-          response.message = 'Leader changed successfully';
-        });
-        break;
-      default:
-        break;
-    }
+    await userModel.find({ username: { $in: updatedTeam.participants } })
+      .then(async (usersFound) => {
+        updatedTeam.participants = usersFound.map(user => user._id);
+        await teamModel.findByIdAndUpdate(updatedTeam._id, updatedTeam)
+          .then(() => {
+            response.status = 200;
+            response.message = 'Team updated successfully';
+          });
+      });
   } catch (error) {
     response.message = `Failure updating team. ${error}`;
     LogError(`[ODM ERROR] ${error}`);

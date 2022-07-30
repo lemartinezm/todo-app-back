@@ -1,6 +1,5 @@
 import { BodyProp, Delete, Example, Get, Inject, Post, Put, Query, Response, Route, SuccessResponse, Tags } from 'tsoa';
 import { createTeam, deleteTeamById, getTeamsByParticipantId, updateTeamById } from '../database/team.odm';
-import { updateTeamOperations } from '../utils/Enums';
 import { BasicResponse, TeamResponse } from '../utils/ResponsesTypes';
 import { ITeamController } from './interfaces/teamController.interface';
 
@@ -159,9 +158,7 @@ export class TeamController implements ITeamController {
 
   /**
    * Endpoint to update a Team
-   * @param {string} teamId Team to update
-   * @param {updateTeamOperations} updateOperation Type of update operation
-   * @param {any} data Data to update
+   * @param {any} updatedTeam Updated Team
    * @returns {BasicResponse} Object with response status and confirmation or error message
    */
   @Put('/')
@@ -169,13 +166,12 @@ export class TeamController implements ITeamController {
   @Response<TeamResponse>(400, 'Something went wrong', errorExample)
   @Example<TeamResponse>({
     status: 200,
-    message: 'Participant added successfully'
+    message: 'Team updated successfully'
   })
   async updateTeam (@Inject() loggedUserId: string,
-    @BodyProp('teamId') teamId: string,
-    @BodyProp('updateOperation') updateOperation: updateTeamOperations,
-    @BodyProp('data') data?: any): Promise<BasicResponse> {
-    return await updateTeamById(loggedUserId, teamId, updateOperation, data);
+    @BodyProp('updatedTeam') updatedTeam: any
+  ): Promise<BasicResponse> {
+    return await updateTeamById(loggedUserId, updatedTeam);
   }
 
   /**

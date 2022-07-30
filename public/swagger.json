@@ -63,16 +63,6 @@
 				"type": "object",
 				"description": "Response for petitions sent to Teams endpoints"
 			},
-			"updateTeamOperations": {
-				"enum": [
-					"ADD_MEMBER",
-					"DELETE_MEMBER",
-					"ADD_TODO",
-					"DELETE_TODO",
-					"CHANGE_LEADER"
-				],
-				"type": "string"
-			},
 			"TodoSchema": {
 				"description": "Schema returned by DB",
 				"properties": {
@@ -646,7 +636,7 @@
 									"Example 1": {
 										"value": {
 											"status": 200,
-											"message": "Participant added successfully"
+											"message": "Team updated successfully"
 										}
 									}
 								}
@@ -677,34 +667,7 @@
 					"TeamController"
 				],
 				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"properties": {
-									"teamId": {
-										"type": "string",
-										"description": "Team to update"
-									},
-									"updateOperation": {
-										"$ref": "#/components/schemas/updateTeamOperations",
-										"description": "Type of update operation"
-									},
-									"data": {
-										"description": "Data to update"
-									}
-								},
-								"required": [
-									"teamId",
-									"updateOperation"
-								],
-								"type": "object"
-							}
-						}
-					}
-				}
+				"parameters": []
 			},
 			"delete": {
 				"operationId": "DeleteTeam",
@@ -774,7 +737,7 @@
 													"_id": "6294dd86ecca76f24a89503d",
 													"name": "This is a ToDo example",
 													"description": "This is a description example",
-													"createdAt": "2022-07-29T22:43:51.393Z",
+													"createdAt": "2022-07-30T00:07:24.517Z",
 													"deadline": "2022-12-01T05:00:00.000Z",
 													"priority": "NORMAL",
 													"completed": false,
@@ -785,7 +748,7 @@
 													"_id": "6294ddfed8d225386a4f956c",
 													"name": "Second ToDo example",
 													"description": "This is a description example",
-													"createdAt": "2022-07-29T22:43:51.394Z",
+													"createdAt": "2022-07-30T00:07:24.517Z",
 													"deadline": "2022-12-01T05:00:00.000Z",
 													"priority": "HIGH",
 													"completed": false,

@@ -32,12 +32,10 @@ teamRouter
   // * To update existing team
   .put('/', verifyToken, async (req: Request, res: Response) => {
     const loggedUserId: any = res.locals.userId;
-    const teamId: any = req.body?.teamId;
-    const updateOperation: any = req.body?.updateOperation;
-    const data: any = req.body?.data;
+    const updatedTeam: any = req.body?.updatedTeam;
 
     const controller: TeamController = new TeamController();
-    const response = await controller.updateTeam(loggedUserId, teamId, updateOperation, data);
+    const response = await controller.updateTeam(loggedUserId, updatedTeam);
     return res.status(response.status).send(response);
   })
 
